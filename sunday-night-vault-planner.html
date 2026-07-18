@@ -346,6 +346,7 @@ textarea{min-height:130px;resize:vertical;line-height:1.6}
   <header class="masthead">
     <h1 class="mark">The Sunday Night <em>Vault</em></h1>
     <p class="clockline" id="clockline">Briefing &middot; before you open Lock 2</p>
+    <a class="homelink" href="index.html">&#8592; All three locks</a>
   </header>
 
   <ol class="stages hidden" id="stages">
@@ -576,9 +577,9 @@ textarea{min-height:130px;resize:vertical;line-height:1.6}
             <p class="count" id="c2">0 characters</p>
           </div>
 
-          <button class="btn ghost" id="copyBtn" type="button">Copy my plan for Canvas</button>
+          <button class="btn ghost" id="copyBtn" type="button">Copy my plan (for your own notes)</button>
           <p style="font-size:14px;color:var(--ink-2);margin:10px 0 0">
-            Paste this into the Canvas question that follows. It carries your full week, your totals, and both answers.
+            Optional. This copies your full week, your totals, and both answers, in case you want to keep them or paste them somewhere. You do not need to hand this in.
           </p>
         </div>
 
@@ -586,6 +587,8 @@ textarea{min-height:130px;resize:vertical;line-height:1.6}
           <p class="eyebrow" style="margin:0">Lock 2 released &middot; word two of three</p>
           <p class="word" id="vaultWord">CLARITY</p>
           <p>Write it down. You need all three words to open the vault.</p>
+          <div><a class="nextbtn" href="sunday-night-vault-lock3.html">Continue to Lock 3: Distractions<span class="arw" aria-hidden="true">&#8594;</span></a></div>
+          <p class="vaultnav"><a href="index.html">or go back to all three locks</a></p>
         </div>
       </section>
 
@@ -1328,7 +1331,7 @@ function planText(){
 }
 $("#copyBtn").onclick=async()=>{
   const txt=planText();
-  try{ await navigator.clipboard.writeText(txt); toast("Plan copied. Paste it into the Canvas question."); }
+  try{ await navigator.clipboard.writeText(txt); toast("Plan copied."); }
   catch(e){
     const ta=el("textarea"); ta.value=txt; ta.style.position="fixed"; ta.style.top="-2000px";
     document.body.appendChild(ta); ta.select();

@@ -131,6 +131,22 @@ input[type=text]:focus,textarea:focus{border-color:var(--accent)}
 .vault p{color:var(--ink-2);margin:0}
 .eyebrow{font-family:var(--f-data);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);margin:0 0 12px;font-weight:600}
 
+
+/* ---------- cross-lock navigation ---------- */
+.homelink{
+  font-size:13.5px;color:var(--accent);text-decoration:none;font-weight:600;
+  border:1.5px solid var(--rule-firm);border-radius:var(--r);padding:6px 12px;white-space:nowrap;
+}
+.homelink:hover{background:var(--accent-lo);border-color:var(--accent)}
+a.nextbtn{
+  display:inline-block;margin-top:18px;text-decoration:none;
+  border:2px solid var(--ink);background:var(--ink);color:#fff;font-weight:700;
+  padding:13px 26px;border-radius:var(--r);font-size:16px;
+}
+a.nextbtn:hover{background:#000;border-color:#000}
+a.nextbtn .arw{margin-left:8px}
+.vaultnav{margin-top:16px;font-size:13.5px}
+.vaultnav a{color:var(--ink-2)}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:100px;z-index:60;background:var(--ink);color:#fff;padding:12px 20px;border-radius:var(--r);font-size:15px;max-width:640px;text-align:center;box-shadow:0 4px 16px rgba(19,26,43,.3);opacity:0;pointer-events:none;transition:opacity .15s}
 .toast[data-on="1"]{opacity:1}
 .toast[data-tone="warn"]{background:var(--alarm)}
@@ -148,6 +164,7 @@ input[type=text]:focus,textarea:focus{border-color:var(--accent)}
   <header class="masthead">
     <h1 class="mark">The Sunday Night <em>Vault</em></h1>
     <p class="clockline">Lock 3 of 3 &middot; Distractions</p>
+    <a class="homelink" href="index.html">&#8592; All three locks</a>
   </header>
 
   <ol class="stages" id="stages">
@@ -253,15 +270,17 @@ input[type=text]:focus,textarea:focus{border-color:var(--accent)}
     </p>
     <div class="panel">
       <div id="planWrap"></div>
-      <button class="btn ghost" id="copyBtn" type="button">Copy my answers for Canvas</button>
+      <button class="btn ghost" id="copyBtn" type="button">Copy my answers (for your own notes)</button>
       <p style="font-size:14px;color:var(--ink-2);margin:10px 0 0">
-        Paste this into the Canvas question that follows.
+        Optional. Keep these if you want them. You do not need to hand this in.
       </p>
     </div>
     <div class="vault hidden" id="vaultBox">
       <p class="eyebrow" style="margin:0">Lock 3 released &middot; word three of three</p>
       <p class="word" id="vaultWord">BALANCE</p>
-      <p>You have all three words now. Enter them in Canvas to open the vault.</p>
+      <p>That is all three words. Time to open the vault.</p>
+          <div><a class="nextbtn" href="sunday-night-vault-gate.html">Open the Vault<span class="arw" aria-hidden="true">&#8594;</span></a></div>
+          <p class="vaultnav"><a href="index.html">or go back to all three locks</a></p>
     </div>
   </section>
 </div>
@@ -582,7 +601,7 @@ function answerText(){
 }
 $("#copyBtn").onclick=async()=>{
   const t=answerText();
-  try{ await navigator.clipboard.writeText(t); toast("Answers copied. Paste them into Canvas."); }
+  try{ await navigator.clipboard.writeText(t); toast("Answers copied. Keep them if you want them."); }
   catch(e){
     const ta=el("textarea");ta.value=t;ta.style.position="fixed";ta.style.top="-2000px";
     document.body.appendChild(ta);ta.select();

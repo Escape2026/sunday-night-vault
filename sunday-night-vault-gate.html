@@ -109,6 +109,21 @@ input[type=text]{width:100%;background:var(--surface);border:1.5px solid var(--r
 .warnbox{font-size:14.5px;color:var(--ink-2);background:var(--alarm-lo);border-left:4px solid var(--alarm);padding:13px 15px;border-radius:0 var(--r) var(--r) 0;margin-top:16px}
 .warnbox b{color:var(--alarm)}
 
+
+/* ---------- cross-lock navigation ---------- */
+.homelink{
+  font-size:13.5px;color:var(--accent);text-decoration:none;font-weight:600;
+  border:1.5px solid var(--rule-firm);border-radius:var(--r);padding:6px 12px;white-space:nowrap;
+}
+.homelink:hover{background:var(--accent-lo);border-color:var(--accent)}
+a.nextbtn{
+  display:inline-block;margin-top:18px;text-decoration:none;
+  border:2px solid var(--ink);background:var(--ink);color:#fff;font-weight:700;
+  padding:13px 26px;border-radius:var(--r);font-size:16px;
+}
+a.nextbtn:hover{background:#000;border-color:#000}
+.vaultnav{margin-top:16px;font-size:13.5px}
+.vaultnav a{color:var(--ink-2)}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:34px;z-index:60;background:var(--ink);color:#fff;padding:12px 20px;border-radius:var(--r);font-size:15px;max-width:640px;text-align:center;box-shadow:0 4px 16px rgba(19,26,43,.3);opacity:0;pointer-events:none;transition:opacity .15s}
 .toast[data-on="1"]{opacity:1}
 .toast[data-tone="warn"]{background:var(--alarm)}
@@ -149,6 +164,12 @@ input[type=text]{width:100%;background:var(--surface);border:1.5px solid var(--r
   font-family:var(--f-display);font-style:italic;font-size:clamp(20px,2.8vw,29px);
   color:#7A5600;margin:14px 0 0;
 }
+.cert .verify{
+  font-family:var(--f-data);font-size:11px;letter-spacing:.04em;color:#46516B;
+  margin:16px auto 0;padding:9px 18px;border-top:1px solid #E0D3A8;border-bottom:1px solid #E0D3A8;
+  max-width:92%;line-height:1.5;
+}
+.cert .verify b{color:#131A2B;font-weight:700}
 .cert .foot{
   margin-top:auto;width:100%;display:grid;grid-template-columns:1fr auto 1fr;
   gap:20px;align-items:end;padding-top:16px;
@@ -167,7 +188,13 @@ input[type=text]{width:100%;background:var(--surface);border:1.5px solid var(--r
 @media (max-width:820px){
   .cert{aspect-ratio:auto}
   .cert-inner{position:static;inset:auto;padding:26px 22px}
-  .cert .foot{grid-template-columns:1fr;justify-items:center;gap:16px}
+  .cert .verify{
+  font-family:var(--f-data);font-size:11px;letter-spacing:.04em;color:#46516B;
+  margin:16px auto 0;padding:9px 18px;border-top:1px solid #E0D3A8;border-bottom:1px solid #E0D3A8;
+  max-width:92%;line-height:1.5;
+}
+.cert .verify b{color:#131A2B;font-weight:700}
+.cert .foot{grid-template-columns:1fr;justify-items:center;gap:16px}
 }
 
 /* ---------- printable plan ---------- */
@@ -205,13 +232,14 @@ input[type=text]{width:100%;background:var(--surface);border:1.5px solid var(--r
   <header class="masthead">
     <h1 class="mark">The Sunday Night <em>Vault</em></h1>
     <p class="clockline">The gate</p>
+    <a class="homelink" href="index.html">&#8592; All three locks</a>
   </header>
 
   <h2 class="stage-h">Three words open it</h2>
   <p class="lede">
     You picked up one word at each lock. Put them in below. <strong>Order does not matter and capital letters do
     not matter.</strong> Once the vault opens, everything you did across all three locks gets assembled into a single
-    block you copy once and paste into Canvas.
+    certificate that proves you did the whole thing.
   </p>
 
   <div class="door" id="door">
@@ -221,7 +249,7 @@ input[type=text]{width:100%;background:var(--surface);border:1.5px solid var(--r
     </div>
     <div class="opened hidden" id="opened">
       <p class="big">The vault is open.</p>
-      <p>Everything below is your record. Copy it into Canvas, and print the one page plan if you want it on the fridge.</p>
+      <p>Put your name on the certificate below and screenshot it. That is the only thing you hand in. Everything else here is yours to keep.</p>
     </div>
   </div>
 
@@ -251,7 +279,8 @@ input[type=text]{width:100%;background:var(--surface);border:1.5px solid var(--r
 
     <div class="panel" id="certPanel">
       <p class="eyebrow">Your certificate</p>
-      <div class="namebar">
+      <div id="certGate" class="hint"></div>
+      <div class="namebar" style="margin-top:14px">
         <div>
           <label for="certName">Your full name, spelled the way you want it printed</label>
           <input type="text" id="certName" maxlength="60" autocomplete="name" placeholder="First and last name">
@@ -264,14 +293,16 @@ input[type=text]{width:100%;background:var(--surface);border:1.5px solid var(--r
       <div id="certWrap" class="hidden"></div>
       <div class="btnrow hidden" id="certBtns">
         <button class="btn ghost sm" id="certPrint" type="button">Print or save as PDF</button>
+        <a class="btn ghost sm" href="index.html" style="text-decoration:none;display:inline-block">Back to all three locks</a>
       </div>
     </div>
 
     <div class="panel">
-      <h3><label for="bundle">Everything, in one block</label></h3>
+      <h3><label for="bundle">Everything you did, in one block</label></h3>
       <p style="color:var(--ink-2);margin:0 0 12px;max-width:70ch">
-        Copy this and paste it into the Canvas question. It carries all three locks: your sort, your week, your
-        distractions, and your plans.
+        Optional, and only for you. It carries all three locks: your sort, your full week with every block placed
+        by day and time, your category totals, the distractions you named, and both of your plans. Handy if you
+        want to keep a copy or work from it later.
       </p>
       <textarea id="bundle" readonly></textarea>
       <div class="btnrow">
@@ -288,7 +319,9 @@ input[type=text]{width:100%;background:var(--surface);border:1.5px solid var(--r
       <h3>One or more locks did not carry over</h3>
       <p style="color:var(--ink-2);max-width:70ch">
         That happens when a lock was finished on a different computer or browser, or when the browser cleared its
-        storage. Paste the receipt from each missing lock below. Each one is the text you copied at the end of that lock.
+        storage. Paste the receipt from each missing lock below to rebuild your written record.
+        <b>Pasting does not unlock the certificate.</b> The certificate needs all three locks finished in this browser,
+        so if one is missing you will need to run that lock again here.
       </p>
       <div id="pasteBoxes"></div>
       <button class="btn sm" id="pasteBtn" type="button" style="margin-top:12px">Use what I pasted</button>
@@ -486,6 +519,7 @@ function assemble(){
   $("#bundle").value=fullBundle();
   $("#codeOut").textContent=recordCode(body);
   buildSheet(recordCode(body));
+  renderCertGate();
 }
 
 function renderNumbers(){
@@ -627,8 +661,46 @@ $("#pasteBtn").onclick=()=>{
   if(!n){ toast("Nothing pasted yet.","warn"); return; }
   const body=bundleText();
   $("#bundle").value=fullBundle(); $("#codeOut").textContent=recordCode(body);
-  buildSheet(recordCode(body)); toast(n+" receipt"+(n>1?"s":"")+" added to your record.");
+  buildSheet(recordCode(body)); renderCertGate(); toast(n+" receipt"+(n>1?"s":"")+" added to your record.");
 };
+
+/* =====================================================================
+   COMPLETION CHECK
+   Mirrors the writing gate inside each lock. The certificate will not
+   generate unless all three are genuinely finished in this browser.
+   ===================================================================== */
+const COMPLETE = {
+  lock1:{ name:"Lock 1: The Matrix",
+    test:d=>!!(d && (d.reflect||"").trim().length>=120),
+    why:"the written answer at the end of week five" },
+  lock2:{ name:"Lock 2: Your Week",
+    test:d=>!!(d && (d.q1||"").trim().length>=120 && (d.q2||"").trim().length>=120),
+    why:"both written answers under the ledger" },
+  lock3:{ name:"Lock 3: Distractions",
+    test:d=>!!(d && Array.isArray(d.found) && d.found.length>=10
+              && (d.own||"").trim().length>=4
+              && Array.isArray(d.plans)
+              && d.plans.filter(p=>p&&p.t&&p.a&&p.a.trim().length>=12).length===2),
+    why:"all ten distractions found, your own added, and both if-then plans" }
+};
+function missingWork(){
+  return Object.keys(COMPLETE).filter(k=>!COMPLETE[k].test(D[k]));
+}
+function renderCertGate(){
+  const miss=missingWork(), box=$("#certGate");
+  if(!box) return;
+  if(!miss.length){
+    box.className="hint";
+    box.innerHTML="<b>All three locks are finished.</b> Put your name in and make your certificate.";
+    $("#certBtn").disabled=false; $("#certName").disabled=false;
+    return;
+  }
+  box.className="warnbox";
+  box.innerHTML="<b>The certificate needs all three locks finished.</b> Still to do:<ul style=\"margin:8px 0 0;padding-left:20px\">"+
+    miss.map(k=>`<li>${COMPLETE[k].name} &mdash; ${COMPLETE[k].why}</li>`).join("")+
+    "</ul><p style=\"margin:8px 0 0\">Go back and finish, then come here again. Your work is saved.</p>";
+  $("#certBtn").disabled=true; $("#certName").disabled=true;
+}
 
 /* =====================================================================
    CERTIFICATE
@@ -653,10 +725,22 @@ function sealSVG(){
   </svg>`;
 }
 function buildCert(){
+  const miss=missingWork();
+  if(miss.length){
+    toast("The certificate needs all three locks finished. "+
+          miss.map(k=>COMPLETE[k].name).join(" and ")+" still to go.","warn");
+    renderCertGate(); return;
+  }
   const raw=$("#certName").value.trim().replace(/\s+/g," ");
   if(raw.length<2){ toast("Put your name in first.","warn"); $("#certName").focus(); return; }
   const name=raw.slice(0,60);
   const code=$("#codeOut").textContent||"------";
+  const t=planTotals(D.lock2);
+  const nD = D.lock3 ? (D.lock3.checked||[]).length + ((D.lock3.own||"").trim()?1:0) : 0;
+  const nLocks = ["lock1","lock2","lock3"].filter(k=>D[k]||pasted[k]).length;
+  const verify = `<b>${nLocks} of 3</b> locks &middot; <b>${t.used}</b> of 112 hrs claimed &middot; `+
+                 `<b>${t.school}</b> school hrs placed &middot; <b>${t.pctWknd}%</b> on Sat/Sun &middot; `+
+                 `<b>${nD}</b> distractions named`;
   const date=new Date().toLocaleDateString(undefined,{year:"numeric",month:"long",day:"numeric"});
   $("#certWrap").innerHTML=`
     <div class="cert" role="img" aria-label="Certificate of completion for ${esc(name)}">
@@ -671,6 +755,7 @@ function buildCert(){
           some important skills for being a successful student.
         </p>
         <p class="awesome">You are awesome!</p>
+        <p class="verify">${verify}</p>
         <div class="foot">
           <div class="sig">
             <div class="sigline"><span>Jonathan Corey</span></div>
@@ -704,7 +789,7 @@ $("#certPrint").onclick=()=>{
 /* ---- copy + print ---- */
 $("#copyBtn").onclick=async()=>{
   const t=$("#bundle").value;
-  try{ await navigator.clipboard.writeText(t); toast("Copied. Paste it into the Canvas question."); }
+  try{ await navigator.clipboard.writeText(t); toast("Copied."); }
   catch(e){ $("#bundle").select(); document.execCommand&&document.execCommand("copy"); toast("Copied."); }
 };
 $("#printBtn").onclick=()=>{ document.body.classList.remove("printcert"); window.print(); };
