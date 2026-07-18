@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Sunday Night Vault</title>
+<style>
+:root{
+  --page:#F4F6FA; --surface:#FFFFFF; --sunken:#EDF0F6;
+  --rule:#C6CDDB; --rule-firm:#94A0B8;
+  --ink:#131A2B; --ink-2:#46516B; --ink-3:#616D88;
+  --accent:#23408E; --accent-lo:#E5EAF7;
+  --brass:#7A5600; --brass-lo:#F9ECCB;
+  --ok:#14654A; --ok-lo:#D7F1E4; --alarm:#A32316;
+  --r:5px;
+  --f-display:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+  --f-body:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --f-data:ui-monospace,"SF Mono","Cascadia Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{background:var(--page)}
+body{margin:0;background:var(--page);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:3px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%)}
+.wrap{max-width:1000px;margin:0 auto;padding:0 28px 80px}
+
+.masthead{padding:44px 0 20px;border-bottom:2px solid var(--ink);margin-bottom:30px}
+.mark{font-family:var(--f-display);font-size:clamp(34px,6vw,54px);line-height:1.02;margin:0}
+.mark em{font-style:italic;color:var(--brass)}
+.sub{color:var(--ink-2);margin:12px 0 0;font-size:17.5px;max-width:62ch}
+
+.setup{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:22px 24px;margin-bottom:26px}
+.setup h2{font-family:var(--f-display);font-size:21px;margin:0 0 12px}
+.setup ul{margin:0;padding-left:22px;color:var(--ink-2)}
+.setup li{margin-bottom:7px}
+.setup b{color:var(--ink)}
+
+.locks{display:grid;gap:14px;margin-bottom:28px}
+a.lock{
+  display:grid;grid-template-columns:56px 1fr auto;gap:20px;align-items:center;
+  background:var(--surface);border:2px solid var(--rule-firm);border-radius:var(--r);
+  padding:20px 24px;text-decoration:none;color:inherit;
+}
+a.lock:hover{border-color:var(--accent);background:var(--accent-lo)}
+a.lock .num{
+  font-family:var(--f-display);font-size:34px;line-height:1;color:var(--ink-3);
+  width:56px;height:56px;border:2px solid var(--rule-firm);border-radius:50%;
+  display:grid;place-items:center;
+}
+a.lock .t{font-family:var(--f-display);font-size:23px;margin:0 0 3px}
+a.lock .d{color:var(--ink-2);font-size:14.5px;margin:0}
+a.lock .st{
+  font-family:var(--f-data);font-size:11px;letter-spacing:.13em;text-transform:uppercase;
+  font-weight:700;color:var(--ink-3);white-space:nowrap;text-align:right;
+}
+a.lock[data-done="1"]{border-color:var(--ok);background:var(--ok-lo)}
+a.lock[data-done="1"] .num{border-color:var(--ok);color:var(--ok)}
+a.lock[data-done="1"] .st{color:var(--ok)}
+a.lock.gate{border-color:var(--brass);background:var(--brass-lo)}
+a.lock.gate .num{border-color:var(--brass);color:var(--brass);font-size:26px}
+a.lock.gate:hover{background:#F5E4B8}
+
+.words{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:26px}
+@media (max-width:700px){.words{grid-template-columns:1fr}.locks a.lock{grid-template-columns:44px 1fr}}
+.wordslot{
+  border:2px dashed var(--rule-firm);border-radius:var(--r);padding:16px;text-align:center;background:var(--surface);
+}
+.wordslot .lab{font-family:var(--f-data);font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-3);margin:0 0 6px;font-weight:600}
+.wordslot .val{font-family:var(--f-display);font-size:24px;letter-spacing:.14em;margin:0;color:var(--ink-3)}
+.wordslot[data-have="1"]{border-style:solid;border-color:var(--brass);background:var(--brass-lo)}
+.wordslot[data-have="1"] .val{color:var(--brass)}
+
+.note{font-size:14.5px;color:var(--ink-2);background:var(--accent-lo);border-left:4px solid var(--accent);padding:14px 16px;border-radius:0 var(--r) var(--r) 0}
+.note b{color:var(--ink)}
+.reset{margin-top:26px}
+.reset button{
+  border:1.5px solid var(--rule-firm);background:var(--surface);color:var(--ink-2);
+  padding:8px 14px;border-radius:var(--r);cursor:pointer;font:inherit;font-size:13.5px;
+}
+.reset button:hover{border-color:var(--alarm);color:var(--alarm)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media (prefers-contrast:more){:root{--rule:#7C879E;--rule-firm:#3E4A63;--ink-3:#46516B}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <h1 class="mark">The Sunday Night <em>Vault</em></h1>
+    <p class="sub">
+      It is 8pm on a Sunday. The week ahead is locked, and three locks stand between you and it.
+      Work through them in order. Each one gives you a word.
+    </p>
+  </header>
+
+  <section class="setup">
+    <h2>Before you start</h2>
+    <ul>
+      <li><b>Set aside 90 minutes.</b> You can stop and come back, but do it on the same computer and browser or your work will not follow you.</li>
+      <li><b>Use a computer, not a phone.</b> The planner in Lock 2 is a full seven day grid and will not fit on a phone screen.</li>
+      <li><b>Keep a scrap of paper next to you.</b> Write down each word as you collect it.</li>
+      <li><b>Do it Sunday afternoon if you can.</b> The whole thing is built around the week you are about to walk into.</li>
+    </ul>
+  </section>
+
+  <nav class="locks" aria-label="The three locks">
+    <a class="lock" href="sunday-night-vault-lock1.html" id="k1">
+      <span class="num" aria-hidden="true">1</span>
+      <span><span class="t">The Matrix</span><p class="d">Where the Eisenhower matrix came from, then sort a real week into it. About 25 minutes.</p></span>
+      <span class="st" id="s1">Not started</span>
+    </a>
+    <a class="lock" href="sunday-night-vault-planner.html" id="k2">
+      <span class="num" aria-hidden="true">2</span>
+      <span><span class="t">Your Week</span><p class="d">A briefing on where nine hours per course comes from, then build your own week and fit school into it. About 40 minutes.</p></span>
+      <span class="st" id="s2">Not started</span>
+    </a>
+    <a class="lock" href="sunday-night-vault-lock3.html" id="k3">
+      <span class="num" aria-hidden="true">3</span>
+      <span><span class="t">Distractions</span><p class="d">Find what is pulling at one student, then name your own and make two plans. About 20 minutes.</p></span>
+      <span class="st" id="s3">Not started</span>
+    </a>
+    <a class="lock gate" href="sunday-night-vault-gate.html" id="kg">
+      <span class="num" aria-hidden="true">&#128274;</span>
+      <span><span class="t">Open the Vault</span><p class="d">Enter your three words. Get your record and your certificate. About 5 minutes.</p></span>
+      <span class="st" id="sg">Locked</span>
+    </a>
+  </nav>
+
+  <h2 class="sr">Words collected</h2>
+  <div class="words" id="words"></div>
+
+  <p class="note">
+    <b>Nothing here is graded automatically.</b> When the vault opens it hands you one block of text carrying
+    everything you did. Copy it into the Canvas quiz along with a screenshot of your certificate.
+  </p>
+
+  <div class="reset">
+    <button type="button" id="resetAll">Clear everything and start over</button>
+  </div>
+
+</div>
+
+<script>
+/* Reads what each lock saved and reports progress. Same-origin only, which is
+   why all five files must sit in one folder on one site. */
+const KEYS={
+  k1:{key:"sundayNightVault.lock1.v1", word:"PLAN",    lab:"Lock 1",
+      done:d=>!!(d && (d.reflect||"").trim().length>=120)},
+  k2:{key:"sundayNightVault.v2",       word:"CLARITY", lab:"Lock 2",
+      done:d=>!!(d && (d.q1||"").trim().length>=120 && (d.q2||"").trim().length>=120)},
+  k3:{key:"sundayNightVault.lock3.v1", word:"BALANCE", lab:"Lock 3",
+      done:d=>!!(d && Array.isArray(d.plans) && d.plans.filter(p=>p&&p.t&&p.a&&p.a.trim().length>=12).length===2)}
+};
+function read(k){
+  try{ const r=localStorage.getItem(k); return r?JSON.parse(r):null; }catch(e){ return null; }
+}
+function started(d){ return !!d; }
+
+function render(){
+  const wordBox=document.getElementById("words"); wordBox.innerHTML="";
+  let doneCount=0;
+  ["k1","k2","k3"].forEach((k,i)=>{
+    const cfg=KEYS[k], d=read(cfg.key), fin=cfg.done(d);
+    if(fin) doneCount++;
+    const a=document.getElementById(k), s=document.getElementById("s"+(i+1));
+    a.dataset.done = fin?"1":"0";
+    s.textContent = fin ? "Complete" : (started(d) ? "In progress" : "Not started");
+
+    const w=document.createElement("div");
+    w.className="wordslot"; w.dataset.have=fin?"1":"0";
+    w.innerHTML=`<p class="lab">${cfg.lab}</p><p class="val">${fin?cfg.word:"? ? ? ? ?"}</p>`;
+    wordBox.appendChild(w);
+  });
+  const g=document.getElementById("sg");
+  g.textContent = doneCount===3 ? "Ready" : `${3-doneCount} lock${doneCount===2?"":"s"} to go`;
+  document.getElementById("kg").dataset.done = doneCount===3?"1":"0";
+}
+
+document.getElementById("resetAll").onclick=()=>{
+  if(!confirm("This clears all three locks and everything you have written. It cannot be undone. Continue?")) return;
+  try{ Object.values(KEYS).forEach(c=>localStorage.removeItem(c.key)); }catch(e){}
+  render();
+};
+
+render();
+window.addEventListener("focus",render);
+</script>
+</body>
+</html>
