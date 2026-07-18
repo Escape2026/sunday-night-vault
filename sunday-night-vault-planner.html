@@ -345,7 +345,7 @@ textarea{min-height:130px;resize:vertical;line-height:1.6}
 
   <header class="masthead">
     <h1 class="mark">The Sunday Night <em>Vault</em></h1>
-    <p class="clockline">8:00 pm &middot; Sunday &middot; Lock 2 of 3</p>
+    <p class="clockline" id="clockline">Briefing &middot; before you open Lock 2</p>
   </header>
 
   <ol class="stages" id="stages">
@@ -748,7 +748,8 @@ function showApp(){
   $("#appCols").classList.toggle("hidden",!on);
   $("#stages").classList.toggle("hidden",!on);
   document.querySelector(".dock").style.display = on ? "" : "none";
-  $("#clockline").textContent = on
+  const cl=$("#clockline");
+  if(cl) cl.textContent = on
     ? "8:00 pm \u00b7 Sunday \u00b7 Lock 2 of 3"
     : "Briefing \u00b7 before you open Lock 2";
   if(!on) return;
@@ -1025,13 +1026,7 @@ function render(){
   if(S.stage===3) renderLedger();
   if(!$("#textview").classList.contains("hidden")) renderTextView();
 }
-function renderStages(){
-  document.querySelectorAll("#stages li").forEach(li=>{
-    const s=+li.dataset.s;
-    li.dataset.on=(s===S.stage)?"1":"0";
-    li.dataset.done=(s<S.stage)?"1":"0";
-  });
-}
+function renderStages(){ showApp(); }
 function renderArmed(){
   const a=$("#armed"), b=armedBlock();
   if(!b){ a.dataset.idle="1"; a.textContent="No block selected. Click one in your list to arm it."; return; }
@@ -1234,9 +1229,16 @@ function renderGate(){
     } else{ g.className="gatemsg ready"; g.innerHTML=`All ${SCHOOL_GRID} hours are on the grid.`; btn.disabled=false; }
     btn.textContent="Read the ledger";
   } else {
+    const n1=$("#q1").value.trim().length, n2=$("#q2").value.trim().length;
     const ok=stage3Ready();
     g.className="gatemsg"+(ok?" ready":"");
-    g.innerHTML=ok?"Both answers are in. Copy your plan, then release the lock.":"Answer both questions to release Lock 2.";
+    if(ok) g.innerHTML="Both answers are in. Copy your plan, then release the lock.";
+    else{
+      const short=[];
+      if(n1<120) short.push(`<b>&ldquo;Where did the time actually go&rdquo;</b> needs ${120-n1} more characters`);
+      if(n2<120) short.push(`<b>&ldquo;Your protected hours&rdquo;</b> needs ${120-n2} more characters`);
+      g.innerHTML=short.join(", and ")+".";
+    }
     btn.disabled=!ok; btn.textContent="Release Lock 2";
   }
 }
@@ -1347,7 +1349,8 @@ $("#copyBtn").onclick=async()=>{
    ===================================================================== */
 function save(){
   try{ Store.set(KEY, JSON.stringify({
-    stage:S.stage, stamps:S.stamps, stampOrder:S.stampOrder,
+    stage:S.stage, introDone:S.introDone, introQuiz:S.introQuiz,
+    stamps:S.stamps, stampOrder:S.stampOrder,
     tasks:S.tasks, inst:S.inst, grid:S.grid, repeat:S.repeat,
     seqStamp:S.seqStamp, seqInst:S.seqInst,
     q1:$("#q1").value, q2:$("#q2").value }));
