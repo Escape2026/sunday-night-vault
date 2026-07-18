@@ -147,6 +147,11 @@ a.nextbtn:hover{background:#000;border-color:#000}
 a.nextbtn .arw{margin-left:8px}
 .vaultnav{margin-top:16px;font-size:13.5px}
 .vaultnav a{color:var(--ink-2)}
+
+.buildstamp{
+  margin:44px 0 0;font-family:var(--f-data);font-size:11px;letter-spacing:.14em;
+  color:var(--ink-3);text-align:right;
+}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:100px;z-index:60;background:var(--ink);color:#fff;padding:12px 20px;border-radius:var(--r);font-size:15px;max-width:640px;text-align:center;box-shadow:0 4px 16px rgba(19,26,43,.3);opacity:0;pointer-events:none;transition:opacity .15s}
 .toast[data-on="1"]{opacity:1}
 .toast[data-tone="warn"]{background:var(--alarm)}
@@ -283,6 +288,7 @@ a.nextbtn .arw{margin-left:8px}
           <p class="vaultnav"><a href="index.html">or go back to all three locks</a></p>
     </div>
   </section>
+  <p class="buildstamp">BUILD 5 &middot; Lock 3</p>
 </div>
 
 <div class="dock">
@@ -591,7 +597,8 @@ $("#nextBtn").onclick=()=>{
   else if(S.stage===3&&stage3Ready()){
     $("#vaultBox").classList.remove("hidden");
     $("#vaultWord").textContent=CONFIG.vaultWord;
-    $("#vaultBox").scrollIntoView({behavior:"smooth",block:"center"}); save();
+    $("#vaultBox").scrollIntoView({behavior:"smooth",block:"start"});
+    $("#vaultWord").focus&&$("#vaultWord").setAttribute("tabindex","-1"); save();
   }
 };
 

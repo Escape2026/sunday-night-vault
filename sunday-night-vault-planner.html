@@ -594,8 +594,7 @@ textarea{min-height:130px;resize:vertical;line-height:1.6}
 
     </div>
   </div>
-  <p id="buildstamp" style="margin:40px 0 0;font-family:var(--f-data);font-size:11px;
-     letter-spacing:.12em;color:var(--ink-3);text-align:right">BUILD B4 &middot; briefing gated</p>
+  <p class="buildstamp">BUILD 5 &middot; Lock 2</p>
 </div>
 
 <div class="dock">
@@ -1269,7 +1268,8 @@ $("#nextBtn").onclick=()=>{
   } else if(S.stage===3&&stage3Ready()){
     $("#vaultBox").classList.remove("hidden");
     $("#vaultWord").textContent=CONFIG.vaultWord;
-    $("#vaultBox").scrollIntoView({behavior:"smooth",block:"center"});
+    $("#vaultBox").scrollIntoView({behavior:"smooth",block:"start"});
+    $("#vaultWord").focus&&$("#vaultWord").setAttribute("tabindex","-1");
     save();
   }
 };
