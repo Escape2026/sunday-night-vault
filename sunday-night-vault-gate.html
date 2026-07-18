@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Sunday Night Vault: Open the Vault</title>
+<style>
+/* ============================================================
+   THE SUNDAY NIGHT VAULT — The Gate
+   Self-contained. Desktop. WCAG AA. Palette matched to Locks 1-3.
+   ============================================================ */
+:root{
+  --page:#F4F6FA; --surface:#FFFFFF; --sunken:#EDF0F6;
+  --rule:#C6CDDB; --rule-firm:#94A0B8;
+  --ink:#131A2B; --ink-2:#46516B; --ink-3:#616D88;
+  --accent:#23408E; --accent-lo:#E5EAF7;
+  --brass:#7A5600; --brass-lo:#F9ECCB;
+  --alarm:#A32316; --alarm-lo:#F9E0DD;
+  --ok:#14654A; --ok-lo:#D7F1E4;
+  --r:5px;
+  --f-display:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+  --f-body:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --f-data:ui-monospace,"SF Mono","Cascadia Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{background:var(--page)}
+body{margin:0;background:var(--page);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:3px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%)}
+.hidden{display:none !important}
+.wrap{max-width:1080px;margin:0 auto;padding:0 28px 130px}
+
+.masthead{display:flex;align-items:flex-end;gap:18px;flex-wrap:wrap;padding:26px 0 16px;border-bottom:2px solid var(--ink)}
+.mark{font-family:var(--f-display);font-size:32px;line-height:1;margin:0}
+.mark em{font-style:italic;color:var(--brass)}
+.clockline{font-family:var(--f-data);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin:0 0 3px auto}
+
+h2.stage-h{font-family:var(--f-display);font-size:32px;line-height:1.12;margin:26px 0 8px}
+h3{font-family:var(--f-display);font-size:21px;margin:0 0 10px}
+.lede{color:var(--ink-2);margin:0 0 26px;max-width:70ch;font-size:16.5px}
+.lede strong{color:var(--ink);font-weight:700}
+.panel{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:24px}
+.panel + .panel{margin-top:18px}
+.eyebrow{font-family:var(--f-data);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);margin:0 0 12px;font-weight:600}
+
+/* ---------- the door ---------- */
+.door{
+  border:3px solid var(--ink);border-radius:var(--r);background:var(--surface);
+  padding:34px 30px;position:relative;overflow:hidden;
+}
+.door[data-open="1"]{border-color:var(--brass);background:var(--brass-lo)}
+.dials{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:0 0 6px}
+@media (max-width:820px){.dials{grid-template-columns:1fr}}
+.dial{text-align:center}
+.dial .cap{font-family:var(--f-data);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);margin:0 0 8px;font-weight:600}
+.dial input{
+  width:100%;text-align:center;font-family:var(--f-display);font-size:26px;letter-spacing:.14em;
+  text-transform:uppercase;padding:14px 8px;border:2.5px solid var(--rule-firm);border-radius:var(--r);
+  background:var(--surface);
+}
+.dial input:focus{border-color:var(--accent)}
+.dial[data-state="ok"] input{border-color:var(--ok);background:var(--ok-lo);color:var(--ok)}
+.dial[data-state="no"] input{border-color:var(--alarm);background:var(--alarm-lo)}
+.dial .fb{font-size:12.5px;margin:6px 0 0;min-height:1.3em;font-weight:600}
+.dial[data-state="ok"] .fb{color:var(--ok)}
+.dial[data-state="no"] .fb{color:var(--alarm)}
+
+.opened{text-align:center;padding:8px 0 0}
+.opened .big{font-family:var(--f-display);font-size:46px;line-height:1.05;margin:0 0 8px;color:var(--brass)}
+.opened p{color:var(--ink-2);margin:0 auto;max-width:56ch}
+
+/* ---------- record ---------- */
+.recgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:13px;margin:0 0 20px}
+.stat{background:var(--surface);border:1px solid var(--rule);border-left:5px solid var(--accent);border-radius:var(--r);padding:13px 15px}
+.stat .k{font-size:12.5px;color:var(--ink-2);margin:0 0 5px;font-weight:600}
+.stat .v{font-family:var(--f-display);font-size:29px;line-height:1;margin:0}
+.stat .v small{font-size:13.5px;color:var(--ink-3);font-family:var(--f-body)}
+.stat[data-tone="warn"]{border-left-color:var(--alarm)} .stat[data-tone="warn"] .v{color:var(--alarm)}
+.stat[data-tone="ok"]{border-left-color:var(--ok)} .stat[data-tone="ok"] .v{color:var(--ok)}
+
+.lockrow{display:grid;grid-template-columns:34px 1fr auto;gap:12px;align-items:center;padding:12px 0;border-bottom:1px dotted var(--rule)}
+.lockrow:last-child{border-bottom:0}
+.lockrow .m{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font:700 14px/1 var(--f-data);color:#fff;background:var(--ok)}
+.lockrow[data-found="0"] .m{background:var(--alarm)}
+.lockrow .t{font-size:15px}
+.lockrow .t small{display:block;color:var(--ink-2);font-size:13px}
+.lockrow .s{font-family:var(--f-data);font-size:12px;color:var(--ink-2);text-align:right}
+
+.code{
+  font-family:var(--f-data);font-size:30px;letter-spacing:.22em;text-align:center;
+  background:var(--sunken);border:2px dashed var(--rule-firm);border-radius:var(--r);
+  padding:18px;margin:0 0 8px;font-weight:700;
+}
+textarea{width:100%;background:var(--surface);border:1.5px solid var(--rule-firm);border-radius:var(--r);padding:12px;font-family:var(--f-data);font-size:12.5px;line-height:1.5;min-height:230px;resize:vertical}
+textarea:focus{border-color:var(--accent)}
+input[type=text]{width:100%;background:var(--surface);border:1.5px solid var(--rule-firm);border-radius:var(--r);padding:10px 12px;font-size:15px}
+
+.btn{border:2px solid var(--accent);background:var(--accent);color:#fff;font-weight:700;padding:12px 20px;border-radius:var(--r);cursor:pointer;font-size:15px}
+.btn:hover{background:#1B3272;border-color:#1B3272}
+.btn:disabled{background:var(--sunken);border-color:var(--rule-firm);color:var(--ink-3);cursor:not-allowed}
+.btn.ghost{background:var(--surface);color:var(--accent)}
+.btn.ghost:hover{background:var(--accent-lo)}
+.btn.sm{padding:9px 15px;font-size:14px}
+.btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+
+.hint{font-size:14.5px;color:var(--ink-2);background:var(--accent-lo);border-left:4px solid var(--accent);padding:13px 15px;border-radius:0 var(--r) var(--r) 0;margin-top:16px}
+.hint b{color:var(--ink)}
+.warnbox{font-size:14.5px;color:var(--ink-2);background:var(--alarm-lo);border-left:4px solid var(--alarm);padding:13px 15px;border-radius:0 var(--r) var(--r) 0;margin-top:16px}
+.warnbox b{color:var(--alarm)}
+
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:34px;z-index:60;background:var(--ink);color:#fff;padding:12px 20px;border-radius:var(--r);font-size:15px;max-width:640px;text-align:center;box-shadow:0 4px 16px rgba(19,26,43,.3);opacity:0;pointer-events:none;transition:opacity .15s}
+.toast[data-on="1"]{opacity:1}
+.toast[data-tone="warn"]{background:var(--alarm)}
+
+/* ---------- certificate ---------- */
+.namebar{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-bottom:6px}
+.namebar > div{flex:1;min-width:260px}
+.namebar label{display:block;font-weight:700;font-size:14.5px;margin-bottom:6px}
+
+#certWrap{margin-top:18px}
+.cert{
+  position:relative;background:#FFFDF6;border:3px solid #7A5600;border-radius:3px;
+  padding:0;aspect-ratio:1.414/1;max-width:980px;margin:0 auto;
+  box-shadow:0 6px 26px rgba(19,26,43,.22);
+}
+.cert-inner{
+  position:absolute;inset:14px;border:1px solid #C6A24A;padding:34px 54px 30px;
+  display:flex;flex-direction:column;align-items:center;text-align:center;
+}
+.cert .kicker{
+  font-family:var(--f-data);font-size:11px;letter-spacing:.42em;text-transform:uppercase;
+  color:#7A5600;margin:0 0 4px;font-weight:700;
+}
+.cert h3.ct{
+  font-family:var(--f-display);font-size:clamp(30px,4.6vw,50px);line-height:1.02;
+  margin:0 0 2px;color:#131A2B;letter-spacing:.01em;
+}
+.cert .ct em{font-style:italic;color:#7A5600}
+.cert .rule{width:170px;height:2px;background:#C6A24A;margin:14px 0 18px}
+.cert .certifies{font-size:15.5px;color:#46516B;margin:0 0 6px}
+.cert .who{
+  font-family:var(--f-display);font-size:clamp(28px,4.4vw,46px);line-height:1.1;
+  margin:2px 0 6px;color:#131A2B;border-bottom:2px solid #C6A24A;padding:0 26px 8px;
+  min-width:320px;max-width:92%;word-break:break-word;
+}
+.cert .body{font-size:15.5px;color:#46516B;margin:14px auto 0;max-width:56ch;line-height:1.6}
+.cert .awesome{
+  font-family:var(--f-display);font-style:italic;font-size:clamp(20px,2.8vw,29px);
+  color:#7A5600;margin:14px 0 0;
+}
+.cert .foot{
+  margin-top:auto;width:100%;display:grid;grid-template-columns:1fr auto 1fr;
+  gap:20px;align-items:end;padding-top:16px;
+}
+.cert .sig{text-align:center}
+.cert .sigline{border-bottom:1.5px solid #131A2B;margin-bottom:6px;height:34px;
+  display:flex;align-items:flex-end;justify-content:center}
+.cert .sigline span{font-family:var(--f-display);font-style:italic;font-size:23px;color:#131A2B;padding-bottom:2px}
+.cert .sig .nm{font-size:13.5px;font-weight:700;color:#131A2B;margin:0}
+.cert .sig .rl{font-size:11.5px;color:#616D88;margin:1px 0 0}
+.cert .seal{width:132px;height:132px;flex:0 0 auto}
+.cert .rec{
+  position:absolute;bottom:8px;right:16px;font-family:var(--f-data);
+  font-size:9.5px;letter-spacing:.14em;color:#6E6142;
+}
+@media (max-width:820px){
+  .cert{aspect-ratio:auto}
+  .cert-inner{position:static;inset:auto;padding:26px 22px}
+  .cert .foot{grid-template-columns:1fr;justify-items:center;gap:16px}
+}
+
+/* ---------- printable plan ---------- */
+#sheet{display:none}
+@media print{
+  body{background:#fff}
+  .wrap > *:not(#sheet){display:none !important}
+  .toast,.masthead{display:none !important}
+  #sheet{display:block;font-size:11pt}
+  #sheet h1{font-family:var(--f-display);font-size:20pt;margin:0 0 2pt}
+  #sheet .sub{color:#444;margin:0 0 12pt;font-size:9pt}
+  #sheet h2{font-family:var(--f-display);font-size:13pt;margin:12pt 0 4pt;border-bottom:1px solid #999;padding-bottom:2pt}
+  #sheet table{border-collapse:collapse;width:100%;font-size:9.5pt}
+  #sheet td,#sheet th{border:1px solid #bbb;padding:3pt 5pt;text-align:left;vertical-align:top}
+  #sheet ul{margin:3pt 0;padding-left:14pt}
+  #sheet li{margin-bottom:2pt}
+  #sheet .plan{border-left:3px solid #7A5600;padding-left:8pt;margin:5pt 0}
+  @page{margin:14mm}
+}
+@media print{
+  body.printcert .wrap > *:not(#certWrap){display:none !important}
+  body.printcert #certWrap{display:block !important}
+  body.printcert #certWrap .btnrow,body.printcert #certWrap .namebar,
+  body.printcert #certWrap .eyebrow,body.printcert #certWrap p.help{display:none !important}
+  body.printcert .cert{box-shadow:none;max-width:100%;aspect-ratio:1.414/1}
+  @page{size:landscape}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+@media (prefers-contrast:more){:root{--rule:#7C879E;--rule-firm:#3E4A63;--ink-3:#46516B}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="masthead">
+    <h1 class="mark">The Sunday Night <em>Vault</em></h1>
+    <p class="clockline">The gate</p>
+  </header>
+
+  <h2 class="stage-h">Three words open it</h2>
+  <p class="lede">
+    You picked up one word at each lock. Put them in below. <strong>Order does not matter and capital letters do
+    not matter.</strong> Once the vault opens, everything you did across all three locks gets assembled into a single
+    block you copy once and paste into Canvas.
+  </p>
+
+  <div class="door" id="door">
+    <div class="dials" id="dials"></div>
+    <div class="btnrow" style="justify-content:center">
+      <button class="btn" id="openBtn" type="button">Open the vault</button>
+    </div>
+    <div class="opened hidden" id="opened">
+      <p class="big">The vault is open.</p>
+      <p>Everything below is your record. Copy it into Canvas, and print the one page plan if you want it on the fridge.</p>
+    </div>
+  </div>
+
+  <!-- ============ RECORD ============ -->
+  <section id="record" class="hidden">
+
+    <h2 class="stage-h">Your record</h2>
+    <div class="panel">
+      <p class="eyebrow">What this computer found</p>
+      <div id="lockRows"></div>
+      <div id="missingNote"></div>
+    </div>
+
+    <div class="panel">
+      <p class="eyebrow">Your week in numbers</p>
+      <div class="recgrid" id="recgrid"></div>
+      <p id="recVerdict" style="color:var(--ink-2);margin:0;max-width:70ch"></p>
+    </div>
+
+    <div class="panel">
+      <p class="eyebrow">Vault record number</p>
+      <p class="code" id="codeOut">------</p>
+      <p style="font-size:14px;color:var(--ink-2);margin:0">
+        This number is built from your own answers. No two students who did their own work will have the same one.
+      </p>
+    </div>
+
+    <div class="panel" id="certPanel">
+      <p class="eyebrow">Your certificate</p>
+      <div class="namebar">
+        <div>
+          <label for="certName">Your full name, spelled the way you want it printed</label>
+          <input type="text" id="certName" maxlength="60" autocomplete="name" placeholder="First and last name">
+        </div>
+        <button class="btn" id="certBtn" type="button">Make my certificate</button>
+      </div>
+      <p class="help" style="font-size:13.5px;color:var(--ink-2);margin:6px 0 0">
+        Screenshot it or print it. Either one counts as proof you finished.
+      </p>
+      <div id="certWrap" class="hidden"></div>
+      <div class="btnrow hidden" id="certBtns">
+        <button class="btn ghost sm" id="certPrint" type="button">Print or save as PDF</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3><label for="bundle">Everything, in one block</label></h3>
+      <p style="color:var(--ink-2);margin:0 0 12px;max-width:70ch">
+        Copy this and paste it into the Canvas question. It carries all three locks: your sort, your week, your
+        distractions, and your plans.
+      </p>
+      <textarea id="bundle" readonly></textarea>
+      <div class="btnrow">
+        <button class="btn" id="copyBtn" type="button">Copy everything</button>
+        <button class="btn ghost" id="printBtn" type="button">Print my one page plan</button>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ============ PASTE FALLBACK ============ -->
+  <section id="fallback" class="hidden">
+    <div class="panel">
+      <h3>One or more locks did not carry over</h3>
+      <p style="color:var(--ink-2);max-width:70ch">
+        That happens when a lock was finished on a different computer or browser, or when the browser cleared its
+        storage. Paste the receipt from each missing lock below. Each one is the text you copied at the end of that lock.
+      </p>
+      <div id="pasteBoxes"></div>
+      <button class="btn sm" id="pasteBtn" type="button" style="margin-top:12px">Use what I pasted</button>
+    </div>
+  </section>
+
+  <!-- printable one page plan -->
+  <div id="sheet"></div>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+<div class="sr" id="live" role="status" aria-live="polite"></div>
+
+<script>
+/* =====================================================================
+   CONFIG
+   ===================================================================== */
+const CONFIG = {
+  words:[
+    {lock:"Lock 1", label:"The matrix", word:"PLAN"},
+    {lock:"Lock 2", label:"The planner", word:"CLARITY"},
+    {lock:"Lock 3", label:"Distractions", word:"BALANCE"}
+  ],
+  keys:{ lock1:"sundayNightVault.lock1.v1", lock2:"sundayNightVault.v2", lock3:"sundayNightVault.lock3.v1" },
+  dayStart:6, dayEnd:22, slotMinutes:30,
+  days:["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
+  catLabels:{work:"Work",family:"Family",health:"Health",social:"Social",
+             class1:"Class 1",class2:"Class 2",buffer:"Buffer"},
+  quadLabels:{q1:"Do it now",q2:"Schedule it",q3:"Trim it",q4:"Drop it"},
+  // must stay identical to CONFIG.checklist in the Lock 3 file
+  checklist:[
+    "The TV is on in the same room",
+    "I can hear or see my kids nearby",
+    "My phone is within reach",
+    "I keep opening YouTube or a second screen",
+    "Social media notifications",
+    "Snacking, drinks, and getting up for food",
+    "My desk or table is buried in stuff",
+    "Somebody interrupts me to ask for something",
+    "Background noise I cannot control",
+    "I get up to do a household chore instead"
+  ]
+};
+const ROWS=(CONFIG.dayEnd-CONFIG.dayStart)*(60/CONFIG.slotMinutes);
+const COLS=7, SLOT=CONFIG.slotMinutes/60, CAPACITY=ROWS*COLS*SLOT;
+
+const Store=(()=>{let ok=true;try{localStorage.setItem("__t","1");localStorage.removeItem("__t")}catch(e){ok=false}
+  return{get:k=>{try{return ok?localStorage.getItem(k):null}catch(e){return null}}, ok}})();
+
+const $=s=>document.querySelector(s);
+const el=(t,c)=>{const n=document.createElement(t);if(c)n.className=c;return n};
+const norm=v=>String(v||"").toUpperCase().replace(/[^A-Z]/g,"");
+
+let toastT;
+function toast(m,tone){const t=$("#toast");t.textContent=m;t.dataset.on="1";
+  if(tone)t.dataset.tone=tone;else delete t.dataset.tone;$("#live").textContent=m;
+  clearTimeout(toastT);toastT=setTimeout(()=>t.dataset.on="0",3800)}
+
+/* =====================================================================
+   THE DOOR
+   ===================================================================== */
+function buildDials(){
+  const box=$("#dials"); box.innerHTML="";
+  CONFIG.words.forEach((w,i)=>{
+    const d=el("div","dial"); d.dataset.i=i;
+    d.innerHTML=`<p class="cap">${w.lock} &middot; ${w.label}</p>
+      <input type="text" id="w${i}" maxlength="16" autocomplete="off" spellcheck="false"
+        aria-label="${w.lock}, ${w.label}: enter the word you collected">
+      <p class="fb" id="f${i}"></p>`;
+    box.appendChild(d);
+  });
+  CONFIG.words.forEach((w,i)=>{
+    $("#w"+i).addEventListener("input",()=>{
+      const d=$(`.dial[data-i="${i}"]`); delete d.dataset.state; $("#f"+i).textContent="";
+    });
+    $("#w"+i).addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();tryOpen()}});
+  });
+}
+function tryOpen(){
+  // any word may go in any box: collect what was typed, match against the set
+  const typed=CONFIG.words.map((w,i)=>norm($("#w"+i).value));
+  const want=CONFIG.words.map(w=>norm(w.word));
+  let allOk=true;
+  typed.forEach((t,i)=>{
+    const d=$(`.dial[data-i="${i}"]`), f=$("#f"+i);
+    if(!t){ d.dataset.state="no"; f.textContent="Still empty."; allOk=false; return; }
+    if(want.includes(t)){ d.dataset.state="ok"; f.textContent="Accepted."; }
+    else{ d.dataset.state="no"; f.textContent="Not one of the three."; allOk=false; }
+  });
+  const set=new Set(typed.filter(Boolean));
+  if(allOk && set.size<3){ allOk=false; toast("All three words are different. One of these is repeated.","warn"); return; }
+  if(allOk && want.some(w=>!set.has(w))){ allOk=false; toast("One of the three words is missing.","warn"); return; }
+  if(!allOk){ toast("The vault did not open. Check the words you wrote down.","warn"); return; }
+  $("#door").dataset.open="1";
+  $("#opened").classList.remove("hidden");
+  $("#openBtn").disabled=true; $("#openBtn").textContent="Open";
+  CONFIG.words.forEach((w,i)=>$("#w"+i).setAttribute("readonly","readonly"));
+  toast("The vault is open.");
+  assemble();
+  $("#record").scrollIntoView({behavior:"smooth",block:"start"});
+}
+$("#openBtn").onclick=tryOpen;
+
+/* =====================================================================
+   PULL THE THREE LOCKS
+   ===================================================================== */
+let D={lock1:null, lock2:null, lock3:null};
+let pasted={lock1:null, lock2:null, lock3:null};
+
+function readLock(k){
+  const raw=Store.get(CONFIG.keys[k]); if(!raw) return null;
+  try{ return JSON.parse(raw); }catch(e){ return null; }
+}
+function loadAll(){ Object.keys(CONFIG.keys).forEach(k=>{ D[k]=readLock(k); }); }
+
+/* ---- lock 2 maths ---- */
+function planTotals(d){
+  const t={}; Object.keys(CONFIG.catLabels).forEach(k=>t[k]=0);
+  if(!d||!Array.isArray(d.grid)) return {byCat:t,used:0,free:CAPACITY,school:0,late:0,pctWknd:0};
+  let late=0,wknd=0,school=0;
+  d.grid.forEach((iid,i)=>{
+    if(iid===null||!d.inst||!d.inst[iid]) return;
+    const cat=d.inst[iid].cat; t[cat]=(t[cat]||0)+SLOT;
+    if(["class1","class2","buffer"].includes(cat)){
+      school+=SLOT;
+      const r=Math.floor(i/COLS), c=i%COLS;
+      if(CONFIG.dayStart+r*SLOT>=21) late+=SLOT;
+      if(c===0||c===6) wknd+=SLOT;
+    }
+  });
+  const used=Object.values(t).reduce((a,b)=>a+b,0);
+  return {byCat:t, used:+used.toFixed(1), free:+(CAPACITY-used).toFixed(1),
+          school:+school.toFixed(1), late:+late.toFixed(1),
+          pctWknd: school?Math.round(wknd/school*100):0};
+}
+function planRuns(d){
+  const runs=[];
+  if(!d||!Array.isArray(d.grid)) return runs;
+  const idx=(r,c)=>r*COLS+c;
+  for(let c=0;c<COLS;c++){
+    let r=0;
+    while(r<ROWS){
+      const iid=d.grid[idx(r,c)];
+      if(iid===null||iid===undefined){r++;continue}
+      let e=r; while(e<ROWS-1 && d.grid[idx(e+1,c)]===iid) e++;
+      runs.push({c,r,e,iid}); r=e+1;
+    }
+  }
+  return runs;
+}
+function slotLabel(r){
+  const m=CONFIG.dayStart*60+r*CONFIG.slotMinutes;
+  let h=Math.floor(m/60),mm=m%60,ap=h>=12?"pm":"am",hh=h%12||12;
+  return hh+(mm?":"+String(mm).padStart(2,"0"):"")+ap;
+}
+function fmtH(h){ if(h===0.5)return "30 min"; return h+(h===1?" hr":" hrs"); }
+
+/* =====================================================================
+   ASSEMBLE
+   ===================================================================== */
+function assemble(){
+  loadAll();
+  $("#record").classList.remove("hidden");
+
+  const rows=$("#lockRows"); rows.innerHTML="";
+  const meta=[
+    {k:"lock1", n:"Lock 1: the matrix", get:d=>d&&d.reflect ? "sort and reflection saved" : "started but not finished"},
+    {k:"lock2", n:"Lock 2: the planner", get:d=>d&&d.q1 ? "week built, both answers saved" : "started but not finished"},
+    {k:"lock3", n:"Lock 3: distractions", get:d=>d&&d.plans&&d.plans[0]&&d.plans[0].a ? "plans saved" : "started but not finished"}
+  ];
+  let missing=[];
+  meta.forEach(m=>{
+    const d=D[m.k]||pasted[m.k];
+    const ok=!!d;
+    const r=el("div","lockrow"); r.dataset.found=ok?"1":"0";
+    r.innerHTML=`<span class="m">${ok?"\u2713":"!"}</span>`+
+      `<span class="t">${m.n}<small>${ok?m.get(d):"nothing found on this computer"}</small></span>`+
+      `<span class="s">${ok?"loaded":"missing"}</span>`;
+    rows.appendChild(r);
+    if(!ok) missing.push(m);
+  });
+
+  if(missing.length){
+    $("#missingNote").innerHTML=`<div class="warnbox"><b>${missing.length} lock${missing.length>1?"s":""} did not carry over.</b>
+      Scroll down and paste the receipt so your record is complete.</div>`;
+    buildPasteBoxes(missing);
+    $("#fallback").classList.remove("hidden");
+  } else {
+    $("#missingNote").innerHTML=`<div class="hint"><b>All three locks loaded.</b> Nothing else to paste.</div>`;
+    $("#fallback").classList.add("hidden");
+  }
+
+  renderNumbers();
+  const body=bundleText();
+  $("#bundle").value=fullBundle();
+  $("#codeOut").textContent=recordCode(body);
+  buildSheet(recordCode(body));
+}
+
+function renderNumbers(){
+  const d2=D.lock2, t=planTotals(d2);
+  const d3=D.lock3, d1=D.lock1;
+  const nDist = d3 ? (d3.checked||[]).length + ((d3.own||"").trim()?1:0) : 0;
+  const cards=[
+    {k:"Hours claimed", v:t.used, s:"of 112", t:t.used>106?"warn":""},
+    {k:"School hours", v:t.school, s:"hrs", t:"ok"},
+    {k:"Unclaimed", v:t.free, s:"hrs", t:t.free<6?"warn":""},
+    {k:"School after 9pm", v:t.late, s:"hrs", t:t.late>=4?"warn":""},
+    {k:"School on Sat or Sun", v:t.pctWknd, s:"%", t:t.pctWknd>60?"warn":""},
+    {k:"Distractions named", v:nDist, s:"", t:""}
+  ];
+  const g=$("#recgrid"); g.innerHTML="";
+  cards.forEach(c=>{
+    const s=el("div","stat"); if(c.t) s.dataset.tone=c.t;
+    s.innerHTML=`<p class="k">${c.k}</p><p class="v">${c.v} <small>${c.s}</small></p>`;
+    g.appendChild(s);
+  });
+
+  const wk = d1 ? (d1.weeks||0) : 0;
+  const bits=[];
+  if(t.school) bits.push(`You put <b>${t.school} hours</b> of school on the grid and left <b>${t.free} hours</b> unclaimed.`);
+  if(t.pctWknd>60) bits.push(`<b>${t.pctWknd}% of your coursework sits on Saturday and Sunday.</b> If one weekend goes sideways, that week is gone.`);
+  else if(t.school) bits.push(`Your coursework is spread across the week rather than piled on the weekend, which is the harder habit and the one that holds.`);
+  if(t.late>=4) bits.push(`<b>${t.late} hours</b> of it runs after 9pm. Watch whether that work is actually any good.`);
+  if(wk>=1) bits.push(`In Lock 1 you saw what postponing box two for ${wk} week${wk>1?"s":""} does: it comes back as <b>${6+wk*3} hours</b> in a single week, all of it urgent.`);
+  $("#recVerdict").innerHTML = bits.join(" ") || "Finish the locks and your numbers will appear here.";
+}
+
+function bundleText(){
+  const L=[];
+  const d1=D.lock1, d2=D.lock2, d3=D.lock3;
+  L.push("THE SUNDAY NIGHT VAULT — COMPLETE RECORD");
+  L.push("Vault opened with: "+CONFIG.words.map(w=>w.word).join(", "));
+  L.push("");
+
+  /* ---- LOCK 1 ---- */
+  L.push("=== LOCK 1: THE MATRIX ===");
+  if(d1){
+    if(d1.place){
+      ["q1","q2","q3","q4"].forEach(q=>{
+        const items=Object.keys(d1.place).filter(id=>d1.place[id]===q);
+        L.push("  "+CONFIG.quadLabels[q]+": "+items.length+" cards");
+      });
+    }
+    L.push("  Weeks of box two postponed: "+(d1.weeks||0)+
+           "  (week "+((d1.weeks||0)+1)+" load: "+(6+(d1.weeks||0)*3)+" hrs, all urgent)");
+    L.push("  What this changes about my Sunday:");
+    L.push("    "+((d1.reflect||"").trim()||"(no answer)"));
+  } else if(pasted.lock1){ L.push(pasted.lock1); }
+  else L.push("  (not found)");
+  L.push("");
+
+  /* ---- LOCK 2 ---- */
+  L.push("=== LOCK 2: MY WEEK ===");
+  if(d2){
+    const t=planTotals(d2);
+    L.push("  HOURS BY CATEGORY (6am to 10pm, 112 available)");
+    Object.keys(CONFIG.catLabels).forEach(k=>{
+      if(t.byCat[k]>0) L.push("    "+CONFIG.catLabels[k].padEnd(10)+t.byCat[k].toFixed(1)+" hrs");
+    });
+    L.push("    "+"Unclaimed".padEnd(10)+t.free.toFixed(1)+" hrs");
+    L.push("    "+"TOTAL".padEnd(10)+t.used.toFixed(1)+" hrs");
+    L.push("    School after 9pm: "+t.late+" hrs. School on Sat/Sun: "+t.pctWknd+"%.");
+    L.push("");
+    L.push("  MY WEEK AS PLACED");
+    const runs=planRuns(d2);
+    CONFIG.days.forEach((day,c)=>{
+      const mine=runs.filter(x=>x.c===c); if(!mine.length) return;
+      L.push("    "+day);
+      mine.forEach(x=>{
+        const inst=d2.inst[x.iid]; if(!inst) return;
+        L.push("      "+slotLabel(x.r)+"-"+slotLabel(x.e+1)+"  "+inst.name+
+               "  ["+(CONFIG.catLabels[inst.cat]||inst.cat)+", "+fmtH((x.e-x.r+1)*SLOT)+"]");
+      });
+    });
+    L.push("");
+    L.push("  Q. WHERE DID THE TIME ACTUALLY GO");
+    L.push("    "+((d2.q1||"").trim()||"(no answer)"));
+    L.push("  Q. MY PROTECTED HOURS");
+    L.push("    "+((d2.q2||"").trim()||"(no answer)"));
+  } else if(pasted.lock2){ L.push(pasted.lock2); }
+  else L.push("  (not found)");
+  L.push("");
+
+  /* ---- LOCK 3 ---- */
+  L.push("=== LOCK 3: DISTRACTIONS ===");
+  if(d3){
+    L.push("  Found all "+(d3.found||[]).length+" of 10 in the picture.");
+    L.push("  DISTRACTIONS I PERSONALLY EXPERIENCE");
+    (d3.checked||[]).forEach(i=>L.push("    - "+(CONFIG.checklist[i]||("checklist item "+(i+1)))));
+    L.push("    - "+((d3.own||"").trim()||"(none added)")+"   [my own]");
+    L.push("  MY TWO PLANS");
+    (d3.plans||[]).forEach((p,k)=>{
+      if(!p||!p.t) return;
+      L.push("    Plan "+(k+1)+": When "+p.t+(p.x?" "+p.x:"")+", I will "+p.a+".");
+    });
+  } else if(pasted.lock3){ L.push(pasted.lock3); }
+  else L.push("  (not found)");
+  return L.join("\n");
+}
+function fullBundle(){
+  const body=bundleText();
+  return body+"\n\nVault record: "+recordCode(body);
+}
+
+/* stable code from the student's own content */
+function recordCode(text){
+  const src = String(text||"");
+  let h1=0x811c9dc5, h2=0x01000193;
+  for(let i=0;i<src.length;i++){
+    h1^=src.charCodeAt(i); h1=Math.imul(h1,0x01000193)>>>0;
+    h2=(Math.imul(h2^src.charCodeAt(i),0x85ebca6b))>>>0;
+  }
+  const s=(h1.toString(36)+h2.toString(36)).toUpperCase().replace(/[^A-Z0-9]/g,"");
+  return (s+"000000").slice(0,6);
+}
+
+/* ---- paste fallback ---- */
+function buildPasteBoxes(missing){
+  const box=$("#pasteBoxes"); box.innerHTML="";
+  missing.forEach(m=>{
+    const d=el("div"); d.style.marginBottom="14px";
+    d.innerHTML=`<label for="p_${m.k}" style="display:block;font-weight:700;font-size:14.5px;margin-bottom:5px">
+      Receipt from ${m.n}</label>
+      <textarea id="p_${m.k}" style="min-height:120px" placeholder="Paste the text you copied at the end of that lock"></textarea>`;
+    box.appendChild(d);
+  });
+}
+$("#pasteBtn").onclick=()=>{
+  let n=0;
+  ["lock1","lock2","lock3"].forEach(k=>{
+    const ta=$("#p_"+k); if(!ta) return;
+    const v=ta.value.trim();
+    if(v){ pasted[k]=v; n++; }
+  });
+  if(!n){ toast("Nothing pasted yet.","warn"); return; }
+  const body=bundleText();
+  $("#bundle").value=fullBundle(); $("#codeOut").textContent=recordCode(body);
+  buildSheet(recordCode(body)); toast(n+" receipt"+(n>1?"s":"")+" added to your record.");
+};
+
+/* =====================================================================
+   CERTIFICATE
+   ===================================================================== */
+function sealSVG(){
+  const pts=[];
+  for(let i=0;i<48;i++){
+    const a=(i/48)*Math.PI*2, r=(i%2===0)?60:52;
+    pts.push((66+r*Math.cos(a)).toFixed(1)+","+(66+r*Math.sin(a)).toFixed(1));
+  }
+  return `<svg class="seal" viewBox="0 0 132 132" role="img" aria-label="Seal of the Sunday Night Vault">
+    <polygon points="${pts.join(" ")}" fill="#7A5600"></polygon>
+    <circle cx="66" cy="66" r="48" fill="#C6A24A"></circle>
+    <circle cx="66" cy="66" r="42" fill="none" stroke="#FFFDF6" stroke-width="1.5"></circle>
+    <circle cx="66" cy="66" r="34" fill="#7A5600"></circle>
+    <text x="66" y="60" text-anchor="middle" fill="#FFFDF6"
+      font-family="Georgia,serif" font-size="19" font-style="italic">SNV</text>
+    <text x="66" y="76" text-anchor="middle" fill="#F0D89A"
+      font-family="monospace" font-size="7.5" letter-spacing="1.6">SEALED</text>
+    <text x="66" y="88" text-anchor="middle" fill="#F0D89A"
+      font-family="monospace" font-size="7.5" letter-spacing="1.6">RECORD</text>
+  </svg>`;
+}
+function buildCert(){
+  const raw=$("#certName").value.trim().replace(/\s+/g," ");
+  if(raw.length<2){ toast("Put your name in first.","warn"); $("#certName").focus(); return; }
+  const name=raw.slice(0,60);
+  const code=$("#codeOut").textContent||"------";
+  const date=new Date().toLocaleDateString(undefined,{year:"numeric",month:"long",day:"numeric"});
+  $("#certWrap").innerHTML=`
+    <div class="cert" role="img" aria-label="Certificate of completion for ${esc(name)}">
+      <div class="cert-inner">
+        <p class="kicker">Certificate of Completion</p>
+        <h3 class="ct">The Sunday Night <em>Vault</em></h3>
+        <div class="rule"></div>
+        <p class="certifies">This certifies that</p>
+        <p class="who">${esc(name)}</p>
+        <p class="body">
+          has successfully completed the Sunday Night Vault Escape Room and has learned
+          some important skills for being a successful student.
+        </p>
+        <p class="awesome">You are awesome!</p>
+        <div class="foot">
+          <div class="sig">
+            <div class="sigline"><span>Jonathan Corey</span></div>
+            <p class="nm">Jonathan Corey, Ph.D.</p>
+            <p class="rl">Instructor</p>
+          </div>
+          ${sealSVG()}
+          <div class="sig">
+            <div class="sigline"><span style="font-family:var(--f-body);font-style:normal;font-size:15px">${esc(date)}</span></div>
+            <p class="nm">Date completed</p>
+            <p class="rl">All three locks</p>
+          </div>
+        </div>
+      </div>
+      <p class="rec">Vault record ${esc(code)}</p>
+    </div>`;
+  $("#certWrap").classList.remove("hidden");
+  $("#certBtns").classList.remove("hidden");
+  toast("Certificate ready. Screenshot it or print it.");
+  $("#certWrap").scrollIntoView({behavior:"smooth",block:"center"});
+}
+const esc=x=>String(x).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+$("#certBtn").onclick=buildCert;
+$("#certName").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();buildCert()}});
+$("#certPrint").onclick=()=>{
+  document.body.classList.add("printcert");
+  window.print();
+  setTimeout(()=>document.body.classList.remove("printcert"),400);
+};
+
+/* ---- copy + print ---- */
+$("#copyBtn").onclick=async()=>{
+  const t=$("#bundle").value;
+  try{ await navigator.clipboard.writeText(t); toast("Copied. Paste it into the Canvas question."); }
+  catch(e){ $("#bundle").select(); document.execCommand&&document.execCommand("copy"); toast("Copied."); }
+};
+$("#printBtn").onclick=()=>{ document.body.classList.remove("printcert"); window.print(); };
+
+/* ---- printable one page plan ---- */
+function buildSheet(code){
+  const d2=D.lock2, d3=D.lock3;
+  const t=planTotals(d2);
+  const runs=planRuns(d2);
+  const s=$("#sheet");
+  let h=`<h1>My Week</h1><p class="sub">The Sunday Night Vault &middot; record ${code||"------"}</p>`;
+
+  h+=`<h2>Where the hours go</h2><table><tr>`;
+  Object.keys(CONFIG.catLabels).forEach(k=>{ if(t.byCat[k]>0) h+=`<th>${CONFIG.catLabels[k]}</th>`; });
+  h+=`<th>Unclaimed</th></tr><tr>`;
+  Object.keys(CONFIG.catLabels).forEach(k=>{ if(t.byCat[k]>0) h+=`<td>${t.byCat[k].toFixed(1)}</td>`; });
+  h+=`<td>${t.free.toFixed(1)}</td></tr></table>`;
+
+  h+=`<h2>My school blocks</h2>`;
+  const school=runs.filter(x=>d2&&d2.inst[x.iid]&&["class1","class2","buffer"].includes(d2.inst[x.iid].cat));
+  if(!school.length) h+=`<p>None recorded.</p>`;
+  else{
+    h+=`<table><tr><th>Day</th><th>Time</th><th>What</th></tr>`;
+    school.forEach(x=>{
+      const inst=d2.inst[x.iid];
+      h+=`<tr><td>${CONFIG.days[x.c]}</td><td>${slotLabel(x.r)}&ndash;${slotLabel(x.e+1)}</td><td>${inst.name}</td></tr>`;
+    });
+    h+=`</table>`;
+  }
+
+  h+=`<h2>My two plans</h2>`;
+  if(d3&&d3.plans){
+    d3.plans.forEach(p=>{ if(p&&p.t&&p.a)
+      h+=`<p class="plan"><b>When</b> ${p.t}${p.x?" "+p.x:""}, <b>I will</b> ${p.a}.</p>`; });
+  } else h+=`<p>None recorded.</p>`;
+
+  s.innerHTML=h;
+}
+
+/* ---- boot ---- */
+buildDials();
+if(!Store.ok) toast("This browser is blocking local storage, so you may need to paste your receipts.","warn");
+</script>
+</body>
+</html>

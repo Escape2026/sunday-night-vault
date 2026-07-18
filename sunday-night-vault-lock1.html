@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Sunday Night Vault: Lock 1, The Matrix</title>
+<style>
+/* ============================================================
+   THE SUNDAY NIGHT VAULT — Lock 1: The Eisenhower Matrix
+   Self-contained. No external requests. Desktop. WCAG AA.
+   Palette matched to Lock 2 (planner) and Lock 3 (distractions).
+   ============================================================ */
+:root{
+  --page:#F4F6FA; --surface:#FFFFFF; --sunken:#EDF0F6;
+  --rule:#C6CDDB; --rule-firm:#94A0B8;
+  --ink:#131A2B; --ink-2:#46516B; --ink-3:#616D88;
+  --accent:#23408E; --accent-lo:#E5EAF7;
+  --brass:#7A5600; --brass-lo:#F9ECCB;
+  --alarm:#A32316; --alarm-lo:#F9E0DD;
+  --ok:#14654A; --ok-lo:#D7F1E4;
+
+  --q1-t:#F9E0DD; --q1-s:#A32316;   /* do now      */
+  --q2-t:#D7F1E4; --q2-s:#14654A;   /* schedule it */
+  --q3-t:#F9ECCB; --q3-s:#7A5600;   /* trim it     */
+  --q4-t:#E8EAF0; --q4-s:#46516B;   /* drop it     */
+
+  --r:5px;
+  --f-display:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+  --f-body:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --f-data:ui-monospace,"SF Mono","Cascadia Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{background:var(--page)}
+body{margin:0;background:var(--page);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:3px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
+.hidden{display:none !important}
+.wrap{max-width:1240px;margin:0 auto;padding:0 28px 150px}
+
+.masthead{display:flex;align-items:flex-end;gap:18px;flex-wrap:wrap;padding:26px 0 16px;border-bottom:2px solid var(--ink)}
+.mark{font-family:var(--f-display);font-size:32px;line-height:1;margin:0}
+.mark em{font-style:italic;color:var(--brass)}
+.clockline{font-family:var(--f-data);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin:0 0 3px auto}
+
+.stages{display:flex;list-style:none;margin:0 0 28px;padding:0;border-bottom:1px solid var(--rule);flex-wrap:wrap}
+.stages li{font-size:14px;color:var(--ink-3);padding:11px 20px 11px 0;margin-right:20px;border-bottom:3px solid transparent;display:flex;align-items:center;gap:9px;margin-bottom:-1px}
+.stages li .n{width:24px;height:24px;border-radius:50%;border:2px solid var(--rule-firm);display:grid;place-items:center;font-size:12px;font-weight:700;font-family:var(--f-data);flex:0 0 auto}
+.stages li[data-on="1"]{color:var(--ink);font-weight:600;border-bottom-color:var(--accent)}
+.stages li[data-on="1"] .n{border-color:var(--accent);color:var(--accent)}
+.stages li[data-done="1"] .n{background:var(--accent);border-color:var(--accent);color:#fff}
+.stages li[data-done="1"]{color:var(--ink-2)}
+
+h2.stage-h{font-family:var(--f-display);font-size:30px;line-height:1.15;margin:0 0 8px}
+h3{font-family:var(--f-display);font-size:21px;margin:0 0 8px}
+.lede{color:var(--ink-2);margin:0 0 22px;max-width:72ch;font-size:16.5px}
+.lede strong{color:var(--ink);font-weight:700}
+.panel{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:22px}
+.panel + .panel{margin-top:18px}
+.eyebrow{font-family:var(--f-data);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);margin:0 0 12px;font-weight:600}
+
+/* ---------- stage 1: history ---------- */
+.hist{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:26px;align-items:start}
+@media (max-width:980px){.hist{grid-template-columns:1fr}}
+.hist p{max-width:66ch;color:var(--ink-2)}
+.hist p strong{color:var(--ink)}
+.pull{
+  background:var(--brass-lo);border-left:5px solid var(--brass);padding:16px 18px;
+  border-radius:0 var(--r) var(--r) 0;margin:18px 0;font-size:16px;color:var(--ink);
+}
+.pull b{display:block;font-family:var(--f-data);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--brass);margin-bottom:6px}
+.mini{border:1px solid var(--rule);border-radius:var(--r);overflow:hidden}
+.mini table{border-collapse:collapse;width:100%;table-layout:fixed}
+.mini th{font-size:11.5px;font-family:var(--f-data);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);padding:9px 6px;background:var(--sunken);border:1px solid var(--rule)}
+.mini td{border:1px solid var(--rule);padding:12px 10px;vertical-align:top;height:96px}
+.mini td .qn{font-family:var(--f-data);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;display:block;margin-bottom:4px}
+.mini td .qv{font-family:var(--f-display);font-size:18px;line-height:1.15;display:block}
+.mini td .qd{font-size:12.5px;color:var(--ink-2);display:block;margin-top:5px}
+.mini td.q1{background:var(--q1-t)} .mini td.q1 .qn{color:var(--q1-s)}
+.mini td.q2{background:var(--q2-t)} .mini td.q2 .qn{color:var(--q2-s)}
+.mini td.q3{background:var(--q3-t)} .mini td.q3 .qn{color:var(--q3-s)}
+.mini td.q4{background:var(--q4-t)} .mini td.q4 .qn{color:var(--q4-s)}
+
+.quiz{margin-top:20px}
+.quizq{border:1.5px solid var(--rule-firm);border-radius:var(--r);padding:16px;margin-bottom:12px;background:var(--surface)}
+.quizq p.q{font-weight:700;margin:0 0 10px}
+.opt{display:flex;gap:11px;align-items:flex-start;border:1.5px solid var(--rule);border-radius:var(--r);padding:10px 12px;cursor:pointer;margin-bottom:7px;background:var(--surface)}
+.opt:hover{background:var(--sunken)}
+.opt input{width:19px;height:19px;margin:2px 0 0;flex:0 0 auto;accent-color:var(--accent)}
+.opt[data-state="right"]{border-color:var(--ok);border-width:2.5px;background:var(--ok-lo);padding:9px 11px}
+.opt[data-state="wrong"]{border-color:var(--alarm);border-width:2.5px;background:var(--alarm-lo);padding:9px 11px}
+.fb{font-size:14px;margin:8px 0 0;padding:10px 12px;border-radius:var(--r)}
+.fb[data-k="right"]{background:var(--ok-lo);color:var(--ok);font-weight:600}
+.fb[data-k="wrong"]{background:var(--alarm-lo);color:var(--alarm)}
+
+/* ---------- stage 2: the sort ---------- */
+.sortrow{display:grid;grid-template-columns:330px minmax(0,1fr);gap:26px;align-items:start}
+@media (max-width:1080px){.sortrow{grid-template-columns:1fr}}
+.deck{display:grid;gap:8px}
+.card{
+  display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;width:100%;text-align:left;
+  background:var(--surface);border:1.5px solid var(--rule-firm);border-radius:var(--r);padding:11px 13px;cursor:pointer;
+}
+.card:hover{background:var(--sunken)}
+.card[aria-pressed="true"]{border-color:var(--accent);border-width:2.5px;background:var(--accent-lo);padding:10px 12px}
+.card .tag{font-family:var(--f-data);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);display:block;margin-top:3px}
+.card[data-placed="1"]{opacity:.45}
+
+.quads{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.quad{border:2px solid var(--rule-firm);border-radius:var(--r);padding:14px;min-height:210px;background:var(--surface)}
+.quad h4{margin:0 0 3px;font-family:var(--f-display);font-size:19px}
+.quad .sub{font-family:var(--f-data);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);margin:0 0 10px}
+.quad.q1{border-color:var(--q1-s);background:var(--q1-t)}
+.quad.q2{border-color:var(--q2-s);background:var(--q2-t)}
+.quad.q3{border-color:var(--q3-s);background:var(--q3-t)}
+.quad.q4{border-color:var(--q4-s);background:var(--q4-t)}
+.quad[data-armed="1"]{outline:4px solid var(--accent);outline-offset:2px;cursor:pointer}
+.drop{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.drop li{
+  background:var(--surface);border:1px solid var(--rule-firm);border-radius:4px;
+  padding:7px 9px;font-size:13.5px;display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;
+}
+.drop li[data-mark="right"]{border-color:var(--ok);border-width:2px;background:var(--ok-lo)}
+.drop li[data-mark="wrong"]{border-color:var(--alarm);border-width:2px;background:var(--alarm-lo)}
+.drop li .x{border:1px solid var(--rule-firm);background:var(--surface);border-radius:4px;font-size:12px;padding:2px 7px;cursor:pointer;color:var(--ink-2)}
+.drop li .x:hover{border-color:var(--alarm);color:var(--alarm)}
+.why{font-size:12.5px;color:var(--ink-2);grid-column:1/-1;margin:2px 0 0;padding-top:5px;border-top:1px dotted var(--rule)}
+
+.armbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:var(--accent-lo);border:1.5px solid var(--accent);border-radius:var(--r);padding:10px 14px;margin-bottom:14px;font-size:14.5px}
+.armbar[data-idle="1"]{background:var(--sunken);border-color:var(--rule);color:var(--ink-2)}
+
+/* ---------- stage 3: the re-sort ---------- */
+.pair{border:1.5px solid var(--rule-firm);border-radius:var(--r);padding:18px;margin-bottom:14px;background:var(--surface)}
+.pair .task{font-family:var(--f-display);font-size:20px;margin:0 0 14px}
+.when{display:grid;grid-template-columns:150px 1fr;gap:14px;align-items:center;margin-bottom:10px}
+.when .lab{font-family:var(--f-data);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);text-align:right}
+.picks{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.pick{border:1.5px solid var(--rule-firm);background:var(--surface);border-radius:var(--r);padding:9px 4px;cursor:pointer;font-size:13px;font-weight:600;text-align:center}
+.pick:hover{background:var(--sunken)}
+.pick[aria-pressed="true"]{border-width:2.5px;padding:8px 3px}
+.pick.q1[aria-pressed="true"]{border-color:var(--q1-s);background:var(--q1-t)}
+.pick.q2[aria-pressed="true"]{border-color:var(--q2-s);background:var(--q2-t)}
+.pick.q3[aria-pressed="true"]{border-color:var(--q3-s);background:var(--q3-t)}
+.pick.q4[aria-pressed="true"]{border-color:var(--q4-s);background:var(--q4-t)}
+
+/* ---------- stage 4: week five ---------- */
+.weeks{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:18px 0}
+.wk{border:1.5px solid var(--rule-firm);border-radius:var(--r);padding:12px;background:var(--surface)}
+.wk h5{margin:0 0 8px;font-family:var(--f-data);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+.wk ul{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.wk li{font-size:11.5px;padding:4px 6px;border-radius:3px;line-height:1.25}
+.wk li.q1{background:var(--q1-t);border-left:3px solid var(--q1-s)}
+.wk li.q2{background:var(--q2-t);border-left:3px solid var(--q2-s)}
+.wk .load{margin:9px 0 0;font-family:var(--f-data);font-size:12px;font-weight:700}
+.wk[data-hot="1"]{border-color:var(--alarm);border-width:2.5px;padding:11px}
+.wk[data-hot="1"] .load{color:var(--alarm)}
+.slider{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:6px 0 4px}
+.slider input[type=range]{flex:1;min-width:260px;accent-color:var(--accent)}
+.slider output{font-family:var(--f-display);font-size:28px;min-width:2.4em}
+
+textarea{width:100%;background:var(--surface);border:1.5px solid var(--rule-firm);border-radius:var(--r);padding:11px 12px;font-size:15px;min-height:130px;resize:vertical;line-height:1.6}
+textarea:focus{border-color:var(--accent)}
+.count{font-family:var(--f-data);font-size:12.5px;color:var(--ink-3);margin:5px 0 0}
+.count[data-ok="1"]{color:var(--ok);font-weight:700}
+
+.btn{border:2px solid var(--accent);background:var(--accent);color:#fff;font-weight:700;padding:11px 18px;border-radius:var(--r);cursor:pointer;font-size:15px}
+.btn:hover{background:#1B3272;border-color:#1B3272}
+.btn:disabled{background:var(--sunken);border-color:var(--rule-firm);color:var(--ink-3);cursor:not-allowed}
+.btn.ghost{background:var(--surface);color:var(--accent)}
+.btn.ghost:hover{background:var(--accent-lo)}
+.btn.sm{padding:8px 14px;font-size:14px}
+
+.hint{font-size:14px;color:var(--ink-2);background:var(--accent-lo);border-left:4px solid var(--accent);padding:12px 14px;border-radius:0 var(--r) var(--r) 0;margin-top:16px}
+.hint b{color:var(--ink)}
+
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--surface);border-top:2px solid var(--ink);padding:14px 28px;box-shadow:0 -3px 12px rgba(19,26,43,.10)}
+.dock-in{max-width:1240px;margin:0 auto;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.gatemsg{font-size:15px;color:var(--ink-2);flex:1;min-width:250px;margin:0}
+.gatemsg b{color:var(--ink)}
+.gatemsg.ready{color:var(--ok);font-weight:600}
+.gatemsg.warn{color:var(--alarm);font-weight:600}
+
+.vault{border:3px solid var(--brass);border-radius:var(--r);padding:26px;margin-top:22px;background:var(--brass-lo);text-align:center}
+.vault .word{font-family:var(--f-display);font-size:56px;letter-spacing:.16em;color:var(--brass);margin:10px 0 6px;line-height:1}
+.vault p{color:var(--ink-2);margin:0}
+
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:100px;z-index:60;background:var(--ink);color:#fff;padding:12px 20px;border-radius:var(--r);font-size:15px;max-width:660px;text-align:center;box-shadow:0 4px 16px rgba(19,26,43,.3);opacity:0;pointer-events:none;transition:opacity .15s}
+.toast[data-on="1"]{opacity:1}
+.toast[data-tone="warn"]{background:var(--alarm)}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+@media (prefers-contrast:more){:root{--rule:#7C879E;--rule-firm:#3E4A63;--ink-3:#46516B}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="masthead">
+    <h1 class="mark">The Sunday Night <em>Vault</em></h1>
+    <p class="clockline">Lock 1 of 3 &middot; The Matrix</p>
+  </header>
+
+  <ol class="stages" id="stages">
+    <li data-s="1"><span class="n" aria-hidden="true">1</span> Where it came from</li>
+    <li data-s="2"><span class="n" aria-hidden="true">2</span> Sort the week</li>
+    <li data-s="3"><span class="n" aria-hidden="true">3</span> The same task, twice</li>
+    <li data-s="4"><span class="n" aria-hidden="true">4</span> Week five</li>
+  </ol>
+
+  <!-- ============ STAGE 1 ============ -->
+  <section id="s1">
+    <h2 class="stage-h">A grid Eisenhower never drew</h2>
+    <div class="hist">
+      <div>
+        <p>
+          In 1954, President Dwight Eisenhower gave a speech in which he repeated a line he had picked up from a college
+          president years earlier. The idea was simple enough to sound like a riddle: <strong>the problems that feel most
+          urgent are rarely the ones that matter most, and the ones that matter most almost never feel urgent.</strong>
+        </p>
+        <p>
+          He was talking about running a country. But he had named something every working student runs into by week
+          three. The email marked <em>action required</em> gets answered. The reading for next week does not.
+        </p>
+        <div class="pull">
+          <b>The part most people get wrong</b>
+          Eisenhower never drew a matrix. He described a distinction. The four-box grid you are about to use was drawn
+          decades later by Stephen Covey, in <em>The 7 Habits of Highly Effective People</em> in 1989, where he called
+          it the Time Management Matrix. The insight is Eisenhower's, borrowed from someone whose name we lost. The
+          picture is Covey's.
+        </div>
+        <p>
+          Both axes are simple. <strong>Important</strong> means it moves you toward something you actually want: passing
+          the course, staying healthy, keeping your family fed and your job intact. <strong>Urgent</strong> means it is
+          making noise right now. Cross the two and you get four boxes, and each box wants a different response from you.
+        </p>
+        <p>
+          Covey's real argument was not that you should live in the first box. It was that people who feel permanently
+          behind are living in box one because they keep skipping box two. Everything in box two is quiet, it is
+          important, and it has no deadline pressing on it today. So it waits. And then it does not wait, because a
+          deadline arrives, and it moves into box one at the worst possible moment.
+        </p>
+      </div>
+
+      <div class="mini">
+        <table>
+          <caption class="sr">The four quadrants of the Eisenhower matrix</caption>
+          <thead><tr><th></th><th scope="col">Urgent</th><th scope="col">Not urgent</th></tr></thead>
+          <tbody>
+            <tr>
+              <th scope="row" style="width:78px">Important</th>
+              <td class="q1"><span class="qn">Box 1</span><span class="qv">Do it now</span><span class="qd">Crises and real deadlines</span></td>
+              <td class="q2"><span class="qn">Box 2</span><span class="qv">Schedule it</span><span class="qd">Where the semester is won</span></td>
+            </tr>
+            <tr>
+              <th scope="row">Not important</th>
+              <td class="q3"><span class="qn">Box 3</span><span class="qv">Trim it</span><span class="qd">Urgent to someone else</span></td>
+              <td class="q4"><span class="qn">Box 4</span><span class="qv">Drop it</span><span class="qd">Noise</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel quiz" id="quizPanel">
+      <p class="eyebrow">Two questions before you go on</p>
+      <div id="quizBox"></div>
+    </div>
+  </section>
+
+  <!-- ============ STAGE 2 ============ -->
+  <section id="s2" class="hidden">
+    <h2 class="stage-h">Sort an actual week</h2>
+    <p class="lede">
+      Fourteen things from a real week: coursework, work, family, health, and the rest. Click a card, then click the box
+      it belongs in. Put all fourteen somewhere, then check your sort. <strong>You can move anything until you check.</strong>
+    </p>
+    <p class="armbar" id="armbar" data-idle="1" role="status">No card selected. Click one to pick it up.</p>
+    <div class="sortrow">
+      <div>
+        <div class="panel">
+          <p class="eyebrow"><span id="deckCount">14</span> left to sort</p>
+          <div class="deck" id="deck"></div>
+        </div>
+      </div>
+      <div class="quads" id="quads"></div>
+    </div>
+    <div class="hint" id="sortHint">
+      <b>Stuck between two boxes?</b> Ask what happens if you do nothing about it for a week. If the answer is
+      &ldquo;something breaks,&rdquo; it is urgent. If the answer is &ldquo;nothing yet, but I will pay for it later,&rdquo;
+      that is box two.
+    </div>
+  </section>
+
+  <!-- ============ STAGE 3 ============ -->
+  <section id="s3" class="hidden">
+    <h2 class="stage-h">The same task, twice</h2>
+    <p class="lede">
+      Here is the thing the grid hides. A task does not have a permanent box. <strong>Urgency is a function of the
+      calendar, not the assignment.</strong> Below are three tasks you already sorted. Place each one twice, once early
+      in the week and once late, and watch what moves.
+    </p>
+    <div id="pairs"></div>
+  </section>
+
+  <!-- ============ STAGE 4 ============ -->
+  <section id="s4" class="hidden">
+    <h2 class="stage-h">What box two costs you by week five</h2>
+    <p class="lede">
+      Nothing in box two hurts you the week you skip it. That is exactly what makes it dangerous. Drag the slider to
+      postpone your box two work and watch where it goes.
+    </p>
+    <div class="panel">
+      <div class="slider">
+        <label for="wkSlider"><b>Weeks I put box two off:</b></label>
+        <input type="range" id="wkSlider" min="0" max="4" step="1" value="0" aria-describedby="wkOut">
+        <output id="wkOut" for="wkSlider">0</output>
+      </div>
+      <div class="weeks" id="weeks"></div>
+      <p id="wkVerdict" style="font-size:15.5px;color:var(--ink-2);margin:0"></p>
+    </div>
+
+    <div class="panel">
+      <h3><label for="reflect">What this changes about your Sunday</label></h3>
+      <p style="color:var(--ink-2);margin:0 0 10px;max-width:72ch">
+        You are about to build a real week in Lock 2. Name one box two task from your own two courses that you would
+        normally let slide, and say exactly when in the week you are going to do it instead.
+      </p>
+      <textarea id="reflect" maxlength="1500" aria-describedby="rc"></textarea>
+      <p class="count" id="rc">0 characters</p>
+      <button class="btn ghost sm" id="copyBtn" type="button" style="margin-top:12px">Copy my answers for Canvas</button>
+    </div>
+
+    <div class="vault hidden" id="vaultBox">
+      <p class="eyebrow" style="margin:0">Lock 1 released &middot; word one of three</p>
+      <p class="word" id="vaultWord">PLAN</p>
+      <p>Write it down. Two more locks to go.</p>
+    </div>
+  </section>
+</div>
+
+<div class="dock">
+  <div class="dock-in">
+    <p class="gatemsg" id="gate">Answer both questions to go on.</p>
+    <button class="btn ghost sm" id="resetBtn" type="button">Start over</button>
+    <button class="btn" id="nextBtn" type="button" disabled>Continue</button>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+<div class="sr" id="live" role="status" aria-live="polite"></div>
+
+<script>
+/* =====================================================================
+   CONFIG — edit cards, quiz, and pairs here.
+   ===================================================================== */
+const CONFIG = {
+  vaultWord:"PLAN",
+  quads:{
+    q1:{name:"Do it now",   sub:"Urgent + important",     hint:"Something breaks today if you ignore it."},
+    q2:{name:"Schedule it", sub:"Important, not urgent",  hint:"No deadline pressure yet. This is where the semester is won."},
+    q3:{name:"Trim it",     sub:"Urgent, not important",  hint:"Loud, but it is somebody else's priority, not yours."},
+    q4:{name:"Drop it",     sub:"Neither",                hint:"It costs you time and gives nothing back."}
+  },
+  cards:[
+    {id:"c1",  t:"Discussion post due tonight at 11:59pm", tag:"Class 1", q:"q1",
+     why:"Real deadline, real grade, hours left. This is what box one is actually for."},
+    {id:"c2",  t:"Your child spikes a fever", tag:"Family", q:"q1",
+     why:"Health emergencies outrank everything, and they do not reschedule."},
+    {id:"c3",  t:"Rent is due tomorrow and unpaid", tag:"Life", q:"q1",
+     why:"Hard deadline with a real consequence attached."},
+    {id:"c4",  t:"Reading next week's chapter", tag:"Class 1", q:"q2",
+     why:"Nothing happens today if you skip it. That is the trap. It becomes box one on Saturday night."},
+    {id:"c5",  t:"Finding sources for a paper due in three weeks", tag:"Class 2", q:"q2",
+     why:"Three weeks feels like forever. Source hunting is the step that always takes longer than planned."},
+    {id:"c6",  t:"Your annual physical", tag:"Health", q:"q2",
+     why:"Important and invisible. Health work is box two until it becomes box one."},
+    {id:"c7",  t:"Sunday planning for the week ahead", tag:"Life", q:"q2",
+     why:"The one box two task that shrinks every other box. Skipping it is why weeks fall apart."},
+    {id:"c8",  t:"Watching the lectures before Thursday's quiz", tag:"Class 2", q:"q2",
+     why:"Still a few days out. Do it now and it stays box two. Wait and Thursday morning owns you."},
+    {id:"c9",  t:"The group chat lighting up about weekend plans", tag:"Social", q:"q3",
+     why:"It feels urgent because it is live. It is not moving anything you care about."},
+    {id:"c10", t:"A store sale that ends at midnight", tag:"Life", q:"q3",
+     why:"Manufactured urgency. Somebody built that deadline to get your attention."},
+    {id:"c11", t:"A neighbor wants you to sign for a package right now", tag:"Life", q:"q3",
+     why:"Urgent to your neighbor. This is the box where the word no belongs."},
+    {id:"c12", t:"Scrolling with no particular purpose", tag:"Social", q:"q4",
+     why:"Not urgent, not important, and it eats the exact minutes box two needed."},
+    {id:"c13", t:"Rewatching a series you have already seen twice", tag:"Social", q:"q4",
+     why:"Rest is important. Numbing out on autopilot is a different thing, and you know the difference."},
+    {id:"c14", t:"Reorganizing your desk drawers instead of starting the reading", tag:"Life", q:"q4",
+     why:"Productive-looking avoidance. The tidiest desks in the world belong to people with a paper due."}
+  ],
+  quiz:[
+    {q:"Who actually drew the four-box matrix?",
+     opts:["Dwight Eisenhower, in a 1954 speech","Stephen Covey, in 1989","A college president Eisenhower quoted","The Carnegie Foundation"],
+     a:1, fb:"Covey drew the grid in The 7 Habits of Highly Effective People. Eisenhower described the idea but never made the picture."},
+    {q:"According to Covey, why do people end up living in box one?",
+     opts:["They take on too many jobs","They are bad at saying no","They keep postponing box two until it turns urgent","They do not have enough hours in the week"],
+     a:2, fb:"That is the whole argument. Box two work is quiet and undated, so it waits, and then it arrives as a crisis."}
+  ],
+  pairs:[
+    {task:"Your discussion post with references", early:"Monday morning", late:"Saturday, 10pm",
+     eq:"q2", lq:"q1",
+     why:"Same post, same word count, same references. On Monday it is important and quiet. On Saturday night it is a crisis with your grade attached. Nothing changed except the calendar."},
+    {task:"Finding 3 sources for the paper", early:"Week 1 of a 3-week window", late:"The night before it is due",
+     eq:"q2", lq:"q1",
+     why:"Source hunting is the step that fails loudest under pressure. Databases go down, articles sit behind paywalls, the good one is not there. Early, that is an inconvenience. Late, it is a disaster."},
+    {task:"Watching the recorded lectures", early:"Tuesday, three days before the quiz", late:"Thursday, one hour before the quiz",
+     eq:"q2", lq:"q1",
+     why:"Three days out you are learning. One hour out you are cramming, and cramming is the most expensive way to buy the least durable knowledge."}
+  ]
+};
+
+const Store=(()=>{let ok=true;try{localStorage.setItem("__t","1");localStorage.removeItem("__t")}catch(e){ok=false}
+  const m={};return{get:k=>{try{return ok?localStorage.getItem(k):(m[k]??null)}catch(e){return m[k]??null}},
+  set:(k,v)=>{try{ok?localStorage.setItem(k,v):(m[k]=v)}catch(e){m[k]=v}},
+  del:k=>{try{ok?localStorage.removeItem(k):delete m[k]}catch(e){delete m[k]}}}})();
+const KEY="sundayNightVault.lock1.v1";
+
+const $=s=>document.querySelector(s);
+const el=(t,c)=>{const n=document.createElement(t);if(c)n.className=c;return n};
+const esc=s=>String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+const QK=["q1","q2","q3","q4"];
+
+let S={stage:1, quiz:[null,null], place:{}, checked:false, armed:null,
+       pairs:[{e:null,l:null},{e:null,l:null},{e:null,l:null}], weeks:0, reflect:""};
+
+let toastT;
+function toast(m,tone){const t=$("#toast");t.textContent=m;t.dataset.on="1";
+  if(tone)t.dataset.tone=tone;else delete t.dataset.tone;$("#live").textContent=m;
+  clearTimeout(toastT);toastT=setTimeout(()=>t.dataset.on="0",4000)}
+
+/* ===================== STAGE 1: quiz ===================== */
+function buildQuiz(){
+  const box=$("#quizBox"); box.innerHTML="";
+  CONFIG.quiz.forEach((q,qi)=>{
+    const d=el("div","quizq");
+    d.innerHTML=`<p class="q">${qi+1}. ${esc(q.q)}</p>`;
+    q.opts.forEach((o,oi)=>{
+      const l=el("label","opt");
+      l.innerHTML=`<input type="radio" name="q${qi}" value="${oi}"><span>${esc(o)}</span>`;
+      l.querySelector("input").onchange=()=>{
+        S.quiz[qi]=oi;
+        [...d.querySelectorAll(".opt")].forEach((x,xi)=>{
+          if(S.quiz[qi]===xi) x.dataset.state = (xi===q.a)?"right":"wrong";
+          else if(xi===q.a && S.quiz[qi]!==null && S.quiz[qi]!==q.a) x.dataset.state="right";
+          else delete x.dataset.state;
+        });
+        let fb=d.querySelector(".fb"); if(!fb){fb=el("p","fb");d.appendChild(fb)}
+        fb.dataset.k = (oi===q.a)?"right":"wrong";
+        fb.textContent = (oi===q.a?"Correct. ":"Not quite. ")+q.fb;
+        renderGate(); save();
+      };
+      d.appendChild(l);
+    });
+    box.appendChild(d);
+  });
+}
+function quizReady(){return CONFIG.quiz.every((q,i)=>S.quiz[i]===q.a)}
+
+/* ===================== STAGE 2: the sort ===================== */
+function buildQuads(){
+  const box=$("#quads"); box.innerHTML="";
+  QK.forEach(k=>{
+    const q=CONFIG.quads[k];
+    const d=el("div","quad "+k);
+    d.dataset.q=k;
+    d.innerHTML=`<h4>${q.name}</h4><p class="sub">${q.sub}</p><ul class="drop" id="drop-${k}"></ul>`;
+    d.onclick=e=>{ if(e.target.classList.contains("x")) return; dropInto(k); };
+    box.appendChild(d);
+  });
+}
+function buildDeck(){
+  const deck=$("#deck"); deck.innerHTML="";
+  CONFIG.cards.forEach(c=>{
+    if(S.place[c.id]) return;
+    const b=el("button","card"); b.type="button"; b.dataset.id=c.id;
+    b.setAttribute("aria-pressed", S.armed===c.id?"true":"false");
+    b.innerHTML=`<span>${esc(c.t)}<span class="tag">${esc(c.tag)}</span></span>`;
+    b.onclick=()=>{ if(S.checked) return; S.armed=(S.armed===c.id)?null:c.id; render(); };
+    deck.appendChild(b);
+  });
+  const left=CONFIG.cards.filter(c=>!S.place[c.id]).length;
+  $("#deckCount").textContent=left;
+  if(left===0) deck.innerHTML='<p style="color:var(--ink-2);margin:0;font-size:14px">All fourteen placed. Check your sort below.</p>';
+}
+function dropInto(k){
+  if(S.checked){ toast("Your sort is already checked. Fix the red ones by taking them out first."); return; }
+  if(!S.armed){ toast("Click a card first, then click a box."); return; }
+  const c=CONFIG.cards.find(x=>x.id===S.armed);
+  S.place[S.armed]=k; S.armed=null;
+  toast(`Put "${c.t}" in ${CONFIG.quads[k].name}.`);
+  render(); save();
+}
+function pullOut(id){
+  delete S.place[id];
+  if(S.checked){ S.checked=false; toast("Sort reopened. Move what you need, then check again."); }
+  render(); save();
+}
+function renderDrops(){
+  QK.forEach(k=>{
+    const ul=$("#drop-"+k); ul.innerHTML="";
+    CONFIG.cards.filter(c=>S.place[c.id]===k).forEach(c=>{
+      const li=el("li");
+      const right=c.q===k;
+      if(S.checked) li.dataset.mark=right?"right":"wrong";
+      li.innerHTML=`<span>${esc(c.t)}</span>`+
+        (S.checked&&right?"":`<button class="x" type="button" aria-label="Take out ${esc(c.t)}">Take out</button>`);
+      if(S.checked&&!right){
+        const p=el("p","why");
+        p.textContent=`Belongs in "${CONFIG.quads[c.q].name}." ${c.why}`;
+        li.appendChild(p);
+      }
+      const x=li.querySelector(".x"); if(x) x.onclick=e=>{e.stopPropagation();pullOut(c.id)};
+      ul.appendChild(li);
+    });
+    const qd=document.querySelector(`.quad[data-q="${k}"]`);
+    if(S.armed) qd.dataset.armed="1"; else delete qd.dataset.armed;
+  });
+}
+function allPlaced(){return CONFIG.cards.every(c=>S.place[c.id])}
+function sortScore(){return CONFIG.cards.filter(c=>S.place[c.id]===c.q).length}
+function sortReady(){return S.checked && sortScore()===CONFIG.cards.length}
+
+/* ===================== STAGE 3: the re-sort ===================== */
+function buildPairs(){
+  const box=$("#pairs"); box.innerHTML="";
+  CONFIG.pairs.forEach((p,pi)=>{
+    const d=el("div","pair");
+    d.innerHTML=`<p class="task">${esc(p.task)}</p>`;
+    [["e",p.early],["l",p.late]].forEach(([slot,label])=>{
+      const row=el("div","when");
+      row.innerHTML=`<span class="lab">${esc(label)}</span><div class="picks"></div>`;
+      const picks=row.querySelector(".picks");
+      QK.forEach(k=>{
+        const b=el("button","pick "+k); b.type="button";
+        b.textContent=CONFIG.quads[k].name;
+        b.setAttribute("aria-pressed", S.pairs[pi][slot]===k?"true":"false");
+        b.setAttribute("aria-label",`${p.task}, ${label}: ${CONFIG.quads[k].name}`);
+        b.onclick=()=>{
+          S.pairs[pi][slot]=k;
+          const want = slot==="e"?p.eq:p.lq;
+          if(k!==want) toast(`Not that one. ${label}: think about what happens if you do nothing for 24 hours.`,"warn");
+          render(); save();
+        };
+        picks.appendChild(b);
+      });
+      d.appendChild(row);
+    });
+    if(S.pairs[pi].e===p.eq && S.pairs[pi].l===p.lq){
+      const w=el("p","fb"); w.dataset.k="right"; w.style.fontWeight="400"; w.style.color="var(--ink-2)";
+      w.textContent=p.why; d.appendChild(w);
+    }
+    box.appendChild(d);
+  });
+}
+function pairsReady(){return CONFIG.pairs.every((p,i)=>S.pairs[i].e===p.eq && S.pairs[i].l===p.lq)}
+
+/* ===================== STAGE 4: week five ===================== */
+const WEEK_BASE=[
+  {n:"Discussion post due", q:"q1"},
+  {n:"Work shift", q:"q1"}
+];
+const DEFERRED=["Chapter reading","Lecture videos","Source hunting","4R reflection draft"];
+function renderWeeks(){
+  const n=S.weeks, box=$("#weeks"); box.innerHTML="";
+  for(let w=1;w<=5;w++){
+    const d=el("div","wk");
+    const carried = (w>n) ? Math.min(n, DEFERRED.length) : 0;
+    const isHot = (w===n+1 && n>0);
+    if(isHot) d.dataset.hot="1";
+    d.innerHTML=`<h5>Week ${w}</h5>`;
+    const ul=el("ul");
+    WEEK_BASE.forEach(b=>{const li=el("li",b.q);li.textContent=b.n;ul.appendChild(li)});
+    if(w<=n){
+      DEFERRED.slice(0,2).forEach(t=>{const li=el("li","q2");li.textContent=t+" (skipped)";li.style.opacity=".5";ul.appendChild(li)});
+    } else if(isHot){
+      for(let i=0;i<Math.min(n*2,8);i++){
+        const li=el("li","q1"); li.textContent=DEFERRED[i%DEFERRED.length]+" (now overdue)"; ul.appendChild(li);
+      }
+    } else {
+      DEFERRED.slice(0,2).forEach(t=>{const li=el("li","q2");li.textContent=t;ul.appendChild(li)});
+    }
+    d.appendChild(ul);
+    const load = (w<=n) ? 6 : (isHot ? 6+n*3 : 9);
+    const p=el("p","load"); p.textContent=load+" hrs"; d.appendChild(p);
+    box.appendChild(d);
+  }
+  const v=$("#wkVerdict");
+  if(n===0) v.innerHTML="Every week runs about nine hours per course. Steady, and nothing is on fire. Now push the slider.";
+  else v.innerHTML=`You bought back <b>${n*3} hours</b> across ${n} week${n>1?"s":""}, and week ${n+1} now carries `+
+    `<b>${6+n*3} hours</b> in a single week, all of it urgent, all of it graded. `+
+    `<b>Box two did not disappear. It moved, and it got more expensive.</b>`;
+}
+$("#wkSlider").addEventListener("input",e=>{
+  S.weeks=+e.target.value; $("#wkOut").textContent=S.weeks;
+  renderWeeks(); save();
+});
+$("#reflect").addEventListener("input",e=>{
+  S.reflect=e.target.value;
+  const n=e.target.value.trim().length,c=$("#rc");
+  c.textContent = n<120 ? `${n} characters. ${120-n} more needed.` : `${n} characters. Long enough.`;
+  c.dataset.ok=n>=120?"1":"0";
+  renderGate(); save();
+});
+function stage4Ready(){return S.weeks>=1 && S.reflect.trim().length>=120}
+
+/* ===================== RENDER + GATES ===================== */
+function render(){
+  document.querySelectorAll("#stages li").forEach(li=>{
+    const s=+li.dataset.s;
+    li.dataset.on=(s===S.stage)?"1":"0"; li.dataset.done=(s<S.stage)?"1":"0";
+  });
+  [1,2,3,4].forEach(n=>$("#s"+n).classList.toggle("hidden",S.stage!==n));
+  if(S.stage===2){
+    buildDeck(); renderDrops();
+    const a=$("#armbar");
+    if(S.armed){ const c=CONFIG.cards.find(x=>x.id===S.armed);
+      delete a.dataset.idle; a.innerHTML=`Holding: <b>${esc(c.t)}</b>. Now click the box it belongs in.`; }
+    else { a.dataset.idle="1"; a.textContent = S.checked
+      ? "Sort checked. Take out anything marked red and put it where it belongs."
+      : "No card selected. Click one to pick it up."; }
+  }
+  if(S.stage===3) buildPairs();
+  if(S.stage===4){ $("#wkSlider").value=S.weeks; $("#wkOut").textContent=S.weeks;
+                   $("#reflect").value=S.reflect; renderWeeks(); }
+  renderGate();
+}
+function renderGate(){
+  const g=$("#gate"), b=$("#nextBtn"); g.className="gatemsg";
+  if(S.stage===1){
+    const ok=quizReady();
+    if(ok){g.className="gatemsg ready";g.textContent="Both right. On to the sort.";b.disabled=false}
+    else{g.textContent="Answer both questions correctly to go on.";b.disabled=true}
+    b.textContent="Sort the week";
+  } else if(S.stage===2){
+    if(!allPlaced()){
+      g.innerHTML=`<b>${CONFIG.cards.filter(c=>!S.place[c.id]).length}</b> cards still in the deck.`;
+      b.disabled=true; b.textContent="Check my sort";
+    } else if(!S.checked){
+      g.className="gatemsg ready"; g.textContent="All fourteen placed. Check your sort.";
+      b.disabled=false; b.textContent="Check my sort";
+    } else {
+      const sc=sortScore();
+      if(sc===CONFIG.cards.length){
+        g.className="gatemsg ready"; g.textContent="Fourteen out of fourteen.";
+        b.disabled=false; b.textContent="The same task, twice";
+      } else {
+        g.className="gatemsg warn";
+        g.innerHTML=`<b>${sc} of 14</b> right. Read the red ones, take them out, and put them where they belong.`;
+        b.disabled=true; b.textContent="Check my sort";
+      }
+    }
+  } else if(S.stage===3){
+    const done=CONFIG.pairs.filter((p,i)=>S.pairs[i].e===p.eq&&S.pairs[i].l===p.lq).length;
+    if(done===CONFIG.pairs.length){g.className="gatemsg ready";g.textContent="All three. Urgency moved, the task never did.";b.disabled=false}
+    else{g.innerHTML=`<b>${done} of 3</b> solved.`;b.disabled=true}
+    b.textContent="Show me week five";
+  } else {
+    const ok=stage4Ready();
+    g.className="gatemsg"+(ok?" ready":"");
+    if(S.weeks<1) g.textContent="Move the slider to see what postponing costs.";
+    else if(!ok) g.textContent="Answer the question below to release Lock 1.";
+    else g.textContent="Answered. Copy it, then release the lock.";
+    b.disabled=!ok; b.textContent="Release Lock 1";
+  }
+}
+$("#nextBtn").onclick=()=>{
+  if(S.stage===1&&quizReady()){S.stage=2;render();save();window.scrollTo({top:0,behavior:"smooth"})}
+  else if(S.stage===2){
+    if(allPlaced()&&!S.checked){
+      S.checked=true; const sc=sortScore();
+      toast(sc===14?"Fourteen out of fourteen.":`${sc} of 14. The red ones have an explanation attached.`, sc===14?null:"warn");
+      render(); save();
+    } else if(sortReady()){ S.stage=3;render();save();window.scrollTo({top:0,behavior:"smooth"}) }
+  }
+  else if(S.stage===3&&pairsReady()){S.stage=4;render();save();window.scrollTo({top:0,behavior:"smooth"})}
+  else if(S.stage===4&&stage4Ready()){
+    $("#vaultBox").classList.remove("hidden");
+    $("#vaultWord").textContent=CONFIG.vaultWord;
+    $("#vaultBox").scrollIntoView({behavior:"smooth",block:"center"}); save();
+  }
+};
+
+/* ===================== EXPORT ===================== */
+function answerText(){
+  const L=["THE SUNDAY NIGHT VAULT — LOCK 1: THE MATRIX",""];
+  L.push("MY SORT");
+  QK.forEach(k=>{
+    L.push("  "+CONFIG.quads[k].name+" ("+CONFIG.quads[k].sub+")");
+    CONFIG.cards.filter(c=>S.place[c.id]===k).forEach(c=>L.push("    - "+c.t));
+  });
+  L.push("","THE SAME TASK, TWICE");
+  CONFIG.pairs.forEach((p,i)=>{
+    L.push(`  ${p.task}`);
+    L.push(`    ${p.early}: ${CONFIG.quads[p.eq].name}`);
+    L.push(`    ${p.late}: ${CONFIG.quads[p.lq].name}`);
+  });
+  L.push("","WEEK FIVE");
+  L.push(`  Weeks postponed: ${S.weeks}. Week ${S.weeks+1} load: ${6+S.weeks*3} hours, all urgent.`);
+  L.push("","WHAT THIS CHANGES ABOUT MY SUNDAY");
+  L.push(S.reflect.trim()||"(no answer)");
+  L.push("","Lock 1 word: "+CONFIG.vaultWord);
+  return L.join("\n");
+}
+$("#copyBtn").onclick=async()=>{
+  const t=answerText();
+  try{await navigator.clipboard.writeText(t);toast("Answers copied. Paste them into Canvas.")}
+  catch(e){const ta=el("textarea");ta.value=t;ta.style.position="fixed";ta.style.top="-2000px";
+    document.body.appendChild(ta);ta.select();
+    try{document.execCommand("copy");toast("Answers copied.")}catch(e2){toast("Copy failed. Select the text by hand.","warn")}
+    ta.remove()}
+};
+
+/* ===================== SAVE / LOAD ===================== */
+function save(){try{Store.set(KEY,JSON.stringify(S))}catch(e){}}
+function load(){
+  const raw=Store.get(KEY); if(!raw) return false;
+  try{const d=JSON.parse(raw); if(!d||typeof d.stage!=="number") return false;
+      S=Object.assign(S,d); S.armed=null; return true}catch(e){return false}
+}
+$("#resetBtn").onclick=()=>{
+  if(!confirm("Clear everything and start Lock 1 over?")) return;
+  Store.del(KEY); location.reload();
+};
+
+buildQuiz(); buildQuads(); load();
+if(S.quiz.some(v=>v!==null)){
+  document.querySelectorAll("#quizBox .quizq").forEach((d,qi)=>{
+    if(S.quiz[qi]===null) return;
+    const q=CONFIG.quiz[qi];
+    const inp=d.querySelector(`input[value="${S.quiz[qi]}"]`); if(inp) inp.checked=true;
+    [...d.querySelectorAll(".opt")].forEach((x,xi)=>{
+      if(S.quiz[qi]===xi) x.dataset.state=(xi===q.a)?"right":"wrong";
+      else if(xi===q.a && S.quiz[qi]!==q.a) x.dataset.state="right";
+    });
+    const fb=el("p","fb"); fb.dataset.k=(S.quiz[qi]===q.a)?"right":"wrong";
+    fb.textContent=(S.quiz[qi]===q.a?"Correct. ":"Not quite. ")+q.fb; d.appendChild(fb);
+  });
+}
+{const n=(S.reflect||"").trim().length,c=$("#rc");
+ c.textContent = n<120 ? `${n} characters. ${120-n} more needed.` : `${n} characters. Long enough.`;
+ c.dataset.ok=n>=120?"1":"0";}
+render();
+</script>
+</body>
+</html>

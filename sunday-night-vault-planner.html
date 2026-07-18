@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Sunday Night Vault: Build Your Week</title>
+<style>
+/* ============================================================
+   THE SUNDAY NIGHT VAULT — Lock 2: Build Your Week
+   Self-contained, no external requests. Desktop. WCAG AA.
+   All colours verified at 4.5:1 or better for their text pairing.
+   ============================================================ */
+
+:root{
+  --page:      #F4F6FA;   /* cool paper */
+  --surface:   #FFFFFF;
+  --sunken:    #EDF0F6;
+  --rule:      #C6CDDB;   /* hairline */
+  --rule-firm: #94A0B8;
+
+  --ink:       #131A2B;   /* 15.4:1 on white */
+  --ink-2:     #46516B;   /* 7.9:1 on white */
+  --ink-3:     #616D88;   /* 5.1:1 on white */
+
+  --accent:    #23408E;   /* deep indigo, 8.9:1 on white */
+  --accent-lo: #E5EAF7;
+  --brass:     #7A5600;   /* 7.2:1 on white */
+  --alarm:     #A32316;   /* 7.4:1 on white */
+  --ok:        #14654A;   /* 7.3:1 on white */
+
+  /* category pairs: tint carries dark text, strong carries the marker */
+  --work-t:#FCE6D4;   --work-s:#A4501A;
+  --fam-t: #FBE0EC;   --fam-s: #9C2B62;
+  --hea-t: #D7F1E4;   --hea-s: #12654A;
+  --soc-t: #E3E0FA;   --soc-s: #45379B;
+  --cl1-t: #D8E9F9;   --cl1-s: #1A5A8A;
+  --cl2-t: #D4EEF2;   --cl2-s: #14646F;
+  --buf-t: #F9ECCB;   --buf-s: #7A5600;
+
+  --r:5px;
+  --f-display: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  --f-body: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --f-data: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+}
+
+*{box-sizing:border-box}
+html{background:var(--page)}
+body{
+  margin:0;background:var(--page);color:var(--ink);
+  font-family:var(--f-body);font-size:16px;line-height:1.55;
+}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:3px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
+.hidden{display:none !important}
+
+.wrap{max-width:1500px;margin:0 auto;padding:0 28px 150px}
+
+/* ---------- masthead ---------- */
+.masthead{
+  display:flex;align-items:flex-end;gap:18px;flex-wrap:wrap;
+  padding:26px 0 16px;border-bottom:2px solid var(--ink);margin-bottom:0;
+}
+.mark{font-family:var(--f-display);font-size:32px;line-height:1;letter-spacing:-.01em}
+.mark em{font-style:italic;color:var(--brass)}
+.clockline{
+  font-family:var(--f-data);font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-3);margin-left:auto;padding-bottom:3px;
+}
+
+/* ---------- stage rail ---------- */
+.stages{display:flex;list-style:none;margin:0 0 26px;padding:0;border-bottom:1px solid var(--rule)}
+.stages li{
+  font-size:14px;color:var(--ink-3);padding:11px 22px 11px 0;margin-right:22px;
+  border-bottom:3px solid transparent;display:flex;align-items:center;gap:9px;margin-bottom:-1px;
+}
+.stages li .n{
+  width:24px;height:24px;border-radius:50%;border:2px solid var(--rule-firm);
+  display:grid;place-items:center;font-size:12px;font-weight:700;font-family:var(--f-data);flex:0 0 auto;
+}
+.stages li[data-on="1"]{color:var(--ink);font-weight:600;border-bottom-color:var(--accent)}
+.stages li[data-on="1"] .n{border-color:var(--accent);color:var(--accent)}
+.stages li[data-done="1"] .n{background:var(--accent);border-color:var(--accent);color:#fff}
+.stages li[data-done="1"]{color:var(--ink-2)}
+
+/* ---------- layout ---------- */
+.cols{display:grid;grid-template-columns:370px minmax(0,1fr);gap:30px;align-items:start}
+@media (max-width:1100px){.cols{grid-template-columns:1fr}}
+
+.panel{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:20px}
+.panel + .panel{margin-top:16px}
+.panel h2, .panel h3{margin-top:0}
+
+.eyebrow{
+  font-family:var(--f-data);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink-3);margin:0 0 12px;font-weight:600;
+}
+h2.stage-h{font-family:var(--f-display);font-size:30px;line-height:1.15;margin:0 0 8px}
+.lede{color:var(--ink-2);margin:0 0 20px;max-width:68ch;font-size:16.5px}
+.lede strong{color:var(--ink);font-weight:700}
+
+/* ---------- dial + ledger table ---------- */
+.dial-wrap{display:flex;gap:20px;align-items:center}
+.dial{position:relative;width:140px;height:140px;flex:0 0 auto}
+.dial svg{transform:rotate(-90deg);display:block}
+.dial-core{position:absolute;inset:0;display:grid;place-items:center;text-align:center}
+.dial-core .big{font-family:var(--f-display);font-size:36px;line-height:1}
+.dial-core .sub{font-family:var(--f-data);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+table.legend{border-collapse:collapse;width:100%;font-size:14px}
+table.legend th{
+  text-align:left;font-family:var(--f-data);font-size:10px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink-3);font-weight:600;padding-bottom:4px;
+}
+table.legend td{padding:2.5px 0;border:0}
+table.legend td.sw{width:16px}
+table.legend td.sw i{display:block;width:12px;height:12px;border-radius:3px;border:1px solid rgba(0,0,0,.3)}
+table.legend td.num{text-align:right;font-family:var(--f-data);font-variant-numeric:tabular-nums}
+table.legend tr.total td{border-top:1px solid var(--rule);padding-top:6px;font-weight:700}
+
+/* ---------- the briefing ---------- */
+.briefkick{
+  font-family:var(--f-data);font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--brass);font-weight:700;margin:0;
+}
+#s0{border-top:1px solid var(--rule);padding-top:22px}
+.handoff{
+  display:flex;gap:22px;align-items:center;justify-content:space-between;flex-wrap:wrap;
+  margin-top:20px;padding:20px 24px;border:2px solid var(--ink);border-radius:var(--r);background:var(--surface);
+}
+.handoff .hk{font-family:var(--f-data);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);margin:0 0 4px;font-weight:600}
+.handoff .hd{margin:0;color:var(--ink-2);max-width:56ch;font-size:15px}
+.handoff .btn{width:auto;min-width:210px;flex:0 0 auto}
+
+/* ---------- stage 0: the reading ---------- */
+.read{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:32px;align-items:start;margin-bottom:22px}
+@media (max-width:1050px){.read{grid-template-columns:1fr}}
+.read p{max-width:66ch;color:var(--ink-2);font-size:16.5px}
+.read p strong{color:var(--ink);font-weight:700}
+.pull{background:#F9ECCB;border-left:5px solid var(--brass);padding:16px 18px;border-radius:0 var(--r) var(--r) 0;margin:18px 0;color:var(--ink);font-size:16px}
+.pull b{display:block;font-family:var(--f-data);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--brass);margin-bottom:6px}
+table.tasks{border-collapse:collapse;width:100%;font-size:14px;margin-bottom:16px}
+table.tasks caption{text-align:left;font-family:var(--f-display);font-size:18px;padding-bottom:7px;color:var(--ink)}
+table.tasks th{text-align:left;font-family:var(--f-data);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);border-bottom:2px solid var(--ink);padding:0 6px 6px 0;font-weight:600}
+table.tasks th.n,table.tasks td.n{text-align:right;font-variant-numeric:tabular-nums;font-family:var(--f-data);white-space:nowrap}
+table.tasks td{padding:6px 6px 6px 0;border-bottom:1px dotted var(--rule);color:var(--ink-2)}
+table.tasks tr.sum td{font-weight:700;color:var(--ink);border-bottom:0;border-top:2px solid var(--ink)}
+.recon{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:18px 0}
+.recon .box{border:1.5px solid var(--rule-firm);border-radius:var(--r);padding:14px 16px;text-align:center;background:var(--surface)}
+.recon .box.hi{border-color:var(--brass);border-width:2.5px;background:#F9ECCB;padding:13px 15px}
+.recon .box .n{font-family:var(--f-display);font-size:34px;line-height:1;margin:0}
+.recon .box .l{font-size:12.5px;color:var(--ink-2);margin:5px 0 0}
+.quizq{border:1.5px solid var(--rule-firm);border-radius:var(--r);padding:16px;margin-bottom:12px;background:var(--surface)}
+.quizq p.q{font-weight:700;margin:0 0 10px}
+.opt{display:flex;gap:11px;align-items:flex-start;border:1.5px solid var(--rule);border-radius:var(--r);padding:10px 12px;cursor:pointer;margin-bottom:7px;background:var(--surface)}
+.opt:hover{background:var(--sunken)}
+.opt input{width:19px;height:19px;margin:2px 0 0;flex:0 0 auto;accent-color:var(--accent)}
+.opt[data-state="right"]{border-color:var(--ok);border-width:2.5px;background:#D7F1E4;padding:9px 11px}
+.opt[data-state="wrong"]{border-color:var(--alarm);border-width:2.5px;background:#F9E0DD;padding:9px 11px}
+.fb{font-size:14px;margin:8px 0 0;padding:10px 12px;border-radius:var(--r)}
+.fb[data-k="right"]{background:#D7F1E4;color:var(--ok);font-weight:600}
+.fb[data-k="wrong"]{background:#F9E0DD;color:var(--alarm)}
+
+/* ---------- forms ---------- */
+.field{margin-bottom:14px}
+.field > label{
+  display:block;font-size:13px;font-weight:700;color:var(--ink-2);margin-bottom:5px;
+}
+.field .help{font-size:12.5px;color:var(--ink-3);margin:4px 0 0}
+input[type=text], select, textarea{
+  width:100%;background:var(--surface);border:1.5px solid var(--rule-firm);
+  border-radius:var(--r);padding:10px 11px;font-size:15px;
+}
+input[type=text]:focus, select:focus, textarea:focus{border-color:var(--accent);outline-offset:1px}
+fieldset{border:0;padding:0;margin:0 0 14px}
+legend{font-size:13px;font-weight:700;color:var(--ink-2);margin-bottom:6px;padding:0}
+.catpick{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.catbtn{
+  border:1.5px solid var(--rule-firm);background:var(--surface);border-radius:var(--r);
+  padding:9px 10px;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:14px;text-align:left;
+}
+.catbtn i{width:12px;height:12px;border-radius:3px;flex:0 0 auto;border:1px solid rgba(0,0,0,.3)}
+.catbtn[aria-pressed="true"]{border-color:var(--accent);border-width:2.5px;background:var(--accent-lo);font-weight:700;padding:8px 9px}
+
+.repeat{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.repeat .catbtn{justify-content:center;font-size:13px;padding:8px 4px}
+.repeat .catbtn[aria-pressed="true"]{padding:7px 3px}
+
+.btn{
+  border:2px solid var(--accent);background:var(--accent);color:#fff;font-weight:700;
+  padding:11px 18px;border-radius:var(--r);cursor:pointer;font-size:15px;
+}
+.btn:hover{background:#1B3272;border-color:#1B3272}
+.btn:disabled{background:var(--sunken);border-color:var(--rule-firm);color:var(--ink-3);cursor:not-allowed}
+.btn.ghost{background:var(--surface);color:var(--accent)}
+.btn.ghost:hover{background:var(--accent-lo)}
+.btn.wide{width:100%}
+.btn.sm{padding:8px 14px;font-size:14px}
+
+/* ---------- tray ---------- */
+.tray{display:grid;gap:8px}
+.chip{
+  display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;width:100%;
+  background:var(--surface);border:1.5px solid var(--rule-firm);border-left:7px solid var(--cs,#888);
+  border-radius:var(--r);padding:10px 12px;cursor:pointer;text-align:left;
+}
+.chip:hover{background:var(--sunken)}
+.chip[aria-pressed="true"]{border-color:var(--accent);border-width:2.5px;border-left-width:7px;background:var(--accent-lo);padding:9px 11px}
+.chip[data-done="1"]{opacity:.55;background:var(--sunken)}
+.chip .nm{font-size:14.5px;font-weight:600;line-height:1.3}
+.chip .meta{display:block;font-size:12.5px;font-weight:400;color:var(--ink-2);margin-top:3px}
+.chip .hrs{font-family:var(--f-data);font-size:14px;font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums}
+.chip .del{
+  border:1px solid var(--rule-firm);background:var(--surface);border-radius:4px;
+  font-size:12px;padding:3px 7px;cursor:pointer;color:var(--ink-2);
+}
+.chip .del:hover{border-color:var(--alarm);color:var(--alarm)}
+.tray-empty{color:var(--ink-3);font-size:14px;padding:14px 0;text-align:center}
+
+.hint{
+  font-size:14px;color:var(--ink-2);background:var(--accent-lo);
+  border-left:4px solid var(--accent);padding:12px 14px;border-radius:0 var(--r) var(--r) 0;margin-top:14px;
+}
+.hint b{color:var(--ink)}
+
+/* ---------- the grid ---------- */
+.gridbox{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:18px}
+.armed{
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  background:var(--accent-lo);border:1.5px solid var(--accent);border-radius:var(--r);
+  padding:10px 14px;margin-bottom:14px;font-size:14.5px;
+}
+.armed[data-idle="1"]{background:var(--sunken);border-color:var(--rule);color:var(--ink-2)}
+.armed b{font-weight:700}
+
+table.week{border-collapse:collapse;width:100%;table-layout:fixed}
+table.week caption{text-align:left;font-size:13px;color:var(--ink-3);padding-bottom:8px}
+table.week th{
+  font-size:13px;font-weight:700;color:var(--ink);padding:0 0 8px;text-align:center;
+  border-bottom:2px solid var(--ink);
+}
+table.week th.tcol{width:74px}
+td.tlab{
+  font-family:var(--f-data);font-size:11px;color:var(--ink-2);text-align:right;
+  padding-right:10px;white-space:nowrap;vertical-align:top;width:74px;
+  border-right:2px solid var(--rule-firm);
+}
+td.tlab.half{visibility:hidden}
+td.cell{
+  height:24px;padding:0;position:relative;cursor:pointer;background:var(--surface);
+  border-right:1px solid var(--rule);border-bottom:1px dotted var(--rule);
+}
+tr.hourtop td.cell{border-top:1px solid var(--rule-firm)}
+tr.hourtop td.cell{border-bottom:1px dotted var(--rule)}
+tr:last-child td.cell{border-bottom:1px solid var(--rule-firm)}
+td.cell:hover{background:var(--sunken);box-shadow:inset 0 0 0 2px var(--accent)}
+td.cell[data-ghost="1"]{background:var(--accent-lo);box-shadow:inset 0 0 0 1px var(--accent)}
+td.cell[data-blocked="1"]{background:#F7DEDA;box-shadow:inset 0 0 0 1px var(--alarm)}
+td.cell[data-cursor="1"]{box-shadow:inset 0 0 0 3px var(--accent)}
+
+td.cell .fill{
+  position:absolute;inset:0;background:var(--ct);border-left:5px solid var(--cs);
+  display:flex;align-items:center;padding:0 7px;overflow:hidden;
+}
+td.cell[data-first="0"] .fill{border-top:1px solid rgba(0,0,0,.10)}
+td.cell .fill .lbl{
+  font-size:12.5px;font-weight:700;color:var(--ink);line-height:1.1;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+td.cell .fill .dur{font-family:var(--f-data);font-size:11px;color:var(--ink-2);margin-left:auto;padding-left:6px;white-space:nowrap}
+td.cell[data-first="0"] .fill .lbl,
+td.cell[data-first="0"] .fill .dur{display:none}
+td.cell[data-late="1"] .fill::after{
+  content:"";position:absolute;right:3px;top:3px;width:0;height:0;
+  border-left:5px solid transparent;border-right:5px solid transparent;border-top:7px solid var(--cs);
+}
+.gridnote{font-size:13px;color:var(--ink-2);margin:12px 0 0}
+.gridnote kbd{
+  font-family:var(--f-data);font-size:11.5px;background:var(--sunken);
+  border:1px solid var(--rule-firm);border-bottom-width:2px;border-radius:3px;padding:1px 5px;
+}
+
+/* ---------- text view ---------- */
+.textview{background:var(--sunken);border:1px solid var(--rule);border-radius:var(--r);padding:16px;margin-top:14px}
+.textview h3{font-size:15px;margin:0 0 10px}
+.textview ul{margin:0;padding-left:20px;font-size:14px;color:var(--ink-2)}
+.textview li{margin-bottom:3px}
+.textview .day{font-weight:700;color:var(--ink);margin-top:10px}
+
+/* ---------- dock ---------- */
+.dock{
+  position:fixed;left:0;right:0;bottom:0;z-index:40;
+  background:var(--surface);border-top:2px solid var(--ink);padding:14px 28px;
+  box-shadow:0 -3px 12px rgba(19,26,43,.10);
+}
+.dock-in{max-width:1500px;margin:0 auto;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.gatemsg{font-size:15px;color:var(--ink-2);flex:1;min-width:260px}
+.gatemsg b{color:var(--ink)}
+.gatemsg.ready{color:var(--ok);font-weight:600}
+.gatemsg.warn{color:var(--alarm);font-weight:600}
+
+/* ---------- stage 3 ---------- */
+.ledger{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:14px;margin:0 0 20px}
+.stat{background:var(--surface);border:1px solid var(--rule);border-left:5px solid var(--accent);border-radius:var(--r);padding:14px 16px}
+.stat .k{font-size:12.5px;color:var(--ink-2);margin-bottom:5px;font-weight:600}
+.stat .v{font-family:var(--f-display);font-size:31px;line-height:1}
+.stat .v small{font-size:14px;color:var(--ink-3);font-family:var(--f-body)}
+.stat[data-tone="warn"]{border-left-color:var(--alarm)}
+.stat[data-tone="warn"] .v{color:var(--alarm)}
+.stat[data-tone="ok"]{border-left-color:var(--ok)}
+.stat[data-tone="ok"] .v{color:var(--ok)}
+
+.qa{margin-bottom:24px}
+.qa h3{font-family:var(--f-display);font-size:21px;margin:0 0 6px}
+.qa p{color:var(--ink-2);margin:0 0 10px;max-width:72ch}
+textarea{min-height:130px;resize:vertical;line-height:1.6}
+.count{font-family:var(--f-data);font-size:12.5px;color:var(--ink-3);margin-top:5px}
+.count[data-ok="1"]{color:var(--ok);font-weight:700}
+
+.vault{
+  border:3px solid var(--brass);border-radius:var(--r);padding:26px;margin-top:22px;
+  background:var(--buf-t);text-align:center;
+}
+.vault .word{font-family:var(--f-display);font-size:56px;letter-spacing:.16em;color:var(--brass);margin:10px 0 6px;line-height:1}
+.vault p{color:var(--ink-2);margin:0}
+
+.toast{
+  position:fixed;left:50%;transform:translateX(-50%);bottom:100px;z-index:60;
+  background:var(--ink);color:#fff;padding:12px 20px;border-radius:var(--r);
+  font-size:15px;max-width:640px;text-align:center;box-shadow:0 4px 16px rgba(19,26,43,.3);
+  opacity:0;pointer-events:none;transition:opacity .15s ease;
+}
+.toast[data-on="1"]{opacity:1}
+.toast[data-tone="warn"]{background:var(--alarm)}
+
+@media (prefers-reduced-motion: reduce){*{transition:none !important;animation:none !important;scroll-behavior:auto !important}}
+@media (prefers-contrast: more){
+  :root{--rule:#7C879E;--rule-firm:#3E4A63;--ink-3:#46516B}
+  td.cell{border-right-color:#7C879E}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <h1 class="mark">The Sunday Night <em>Vault</em></h1>
+    <p class="clockline">8:00 pm &middot; Sunday &middot; Lock 2 of 3</p>
+  </header>
+
+  <ol class="stages" id="stages">
+    <li data-s="1"><span class="n" aria-hidden="true">1</span> Claim your life</li>
+    <li data-s="2"><span class="n" aria-hidden="true">2</span> Place your school hours</li>
+    <li data-s="3"><span class="n" aria-hidden="true">3</span> Read the ledger</li>
+  </ol>
+
+  <!-- ============ STAGE 0: THE READING ============ -->
+  <section id="s0">
+    <p class="briefkick">Briefing &middot; read this first</p>
+    <h2 class="stage-h" style="margin-top:2px">Where the number nine comes from</h2>
+    <div class="read">
+      <div>
+        <p>
+          Your two courses are three credits each. The college tells you to plan for <strong>nine hours a week per
+          course</strong>. That number is not a guess somebody made up, and it is not a threat. It comes from an
+          accounting problem in 1906.
+        </p>
+        <p>
+          Andrew Carnegie wanted to fund pensions for college professors. To hand out the money, the Carnegie Foundation
+          needed a rule for what counted as a college in the first place, and the thing they could actually measure was
+          time in a classroom. The <strong>Carnegie Unit</strong> came out of that, and the credit hour grew out of the
+          Carnegie Unit.
+        </p>
+        <p>
+          The definition in use today sets one credit hour at roughly one hour of instruction plus <strong>a minimum of
+          two hours of your own work outside of class</strong>, every week, across a fifteen week semester. Three credits
+          times three hours is nine. Two courses is eighteen.
+        </p>
+        <div class="pull">
+          <b>The part that catches working students</b>
+          An asynchronous online course has no seat time, and the expectation does not shrink to match. Many adults read
+          &ldquo;online&rdquo; as &ldquo;faster.&rdquo; It is not. The classroom hour did not disappear, it moved into
+          the lecture videos and the reading, and it now has to fit inside the same evening as your job and your family.
+        </div>
+        <p>
+          One honest note before you go on. The credit hour measures <strong>time, not learning.</strong> It cannot tell
+          whether the reading landed. So your real numbers will not match the standard exactly, and neither do ours.
+          That gap is the next thing you need to see.
+        </p>
+      </div>
+
+      <div>
+        <table class="tasks">
+          <caption>Class 1: what it actually takes</caption>
+          <thead><tr><th>Task</th><th class="n">Typical</th></tr></thead>
+          <tbody>
+            <tr><td>Watching lectures</td><td class="n">45 min</td></tr>
+            <tr><td>Reading course material</td><td class="n">3 hrs</td></tr>
+            <tr><td>Reading + prepping assignments</td><td class="n">1.5 hrs</td></tr>
+            <tr><td>Discussion post with references</td><td class="n">1.5 hrs</td></tr>
+            <tr><td>#Powerpost peer response</td><td class="n">1 hr</td></tr>
+            <tr class="sum"><td>Measured total</td><td class="n">7.75 hrs</td></tr>
+          </tbody>
+        </table>
+        <table class="tasks">
+          <caption>Class 2: what it actually takes</caption>
+          <thead><tr><th>Task</th><th class="n">Typical</th></tr></thead>
+          <tbody>
+            <tr><td>Listening to lectures</td><td class="n">30 min</td></tr>
+            <tr><td>Video + 5 embedded questions</td><td class="n">45 min</td></tr>
+            <tr><td>Read a journal article</td><td class="n">1.5 hrs</td></tr>
+            <tr><td>4R reflection paper</td><td class="n">3 hrs</td></tr>
+            <tr><td>Finding 3 sources</td><td class="n">2.5 hrs</td></tr>
+            <tr class="sum"><td>Measured total</td><td class="n">8.25 hrs</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel">
+      <p class="eyebrow">So why does the college say eighteen</p>
+      <div class="recon">
+        <div class="box"><p class="n">16</p><p class="l">hours the work actually takes</p></div>
+        <div class="box"><p class="n">18</p><p class="l">hours you are told to plan</p></div>
+        <div class="box hi"><p class="n">2</p><p class="l">hours of buffer</p></div>
+      </div>
+      <p style="color:var(--ink-2);max-width:70ch;margin:0">
+        The gap is not padding and it is not the college being cautious. It is the reread when the chapter did not land.
+        It is the source that turned out to be useless. It is the video that would not load and the discussion partner
+        who posted late. <strong style="color:var(--ink)">Students who schedule 16 hours have no slack, so the first
+        thing that goes wrong costs them the week. Students who schedule 18 absorb it.</strong> In a minute you will
+        place a two hour buffer block, and now you know what it is for.
+      </p>
+    </div>
+
+    <div class="panel">
+      <p class="eyebrow">Two questions before you start building</p>
+      <div id="quizBox"></div>
+    </div>
+
+    <div class="handoff">
+      <div>
+        <p class="hk">End of briefing</p>
+        <p class="hd">Lock 2 is the planner. You will build your own week, then place these eighteen hours into
+          whatever is left of it.</p>
+      </div>
+      <button class="btn" id="introBtn" type="button" disabled>Continue to Lock 2</button>
+    </div>
+  </section>
+
+  <div class="cols" id="appCols">
+
+    <!-- ================= LEFT RAIL ================= -->
+    <div>
+
+      <section class="panel" aria-labelledby="dialh">
+        <p class="eyebrow" id="dialh">Hours claimed &middot; 6am to 10pm</p>
+        <div class="dial-wrap">
+          <div class="dial">
+            <svg width="140" height="140" viewBox="0 0 140 140" role="img" id="dialSvg" aria-labelledby="dialAlt">
+              <title id="dialAlt">Nothing claimed yet.</title>
+              <circle cx="70" cy="70" r="58" fill="none" stroke="#DDE2EC" stroke-width="16"></circle>
+              <g id="dialsegs"></g>
+            </svg>
+            <div class="dial-core" aria-hidden="true">
+              <div>
+                <div class="big" id="dialNum">0</div>
+                <div class="sub">of 112</div>
+              </div>
+            </div>
+          </div>
+          <table class="legend" id="legend">
+            <caption class="sr">Hours claimed by category</caption>
+          </table>
+        </div>
+      </section>
+
+      <!-- block builder -->
+      <section class="panel" id="makerPanel" aria-labelledby="makerh">
+        <h2 class="eyebrow" id="makerh">Build a block from your real week</h2>
+
+        <fieldset>
+          <legend id="catlbl">Category</legend>
+          <div class="catpick" role="group" aria-labelledby="catlbl" id="catPick"></div>
+        </fieldset>
+
+        <div class="field">
+          <label for="blkName">Name it</label>
+          <input id="blkName" type="text" maxlength="30" autocomplete="off" aria-describedby="blkNameHelp">
+          <p class="help" id="blkNameHelp">Leave blank to use the category name.</p>
+        </div>
+
+        <div class="field">
+          <label for="blkHrs">How long is one block</label>
+          <select id="blkHrs"></select>
+        </div>
+
+        <button class="btn wide" id="addBlk" type="button">Add to my blocks</button>
+
+        <div class="hint">
+          <b>Blocks are reusable.</b> Build &ldquo;Work, 8 hrs&rdquo; once, then drop it on every day you work. It stays in the
+          list until you delete it.
+        </div>
+      </section>
+
+      <!-- repeat control -->
+      <section class="panel" id="repeatPanel" aria-labelledby="reph">
+        <h2 class="eyebrow" id="reph">When I place a block, put it on</h2>
+        <fieldset>
+          <legend class="sr">Repeat pattern</legend>
+          <div class="repeat" role="group" id="repPick"></div>
+        </fieldset>
+        <p class="help" style="margin:8px 0 0">Pick a pattern, then click a start time on the grid.</p>
+      </section>
+
+      <!-- tray -->
+      <section class="panel" aria-labelledby="trayh">
+        <h2 class="eyebrow" id="trayh"><span id="trayTitle">My blocks</span></h2>
+        <div class="tray" id="tray"></div>
+        <p class="tray-empty hidden" id="trayEmpty"></p>
+      </section>
+
+    </div>
+
+    <!-- ================= MAIN ================= -->
+    <div>
+
+      <h2 class="stage-h" id="stageTitle">Claim your life</h2>
+      <p class="lede" id="stageLede">
+        This grid is your week, Sunday through Saturday, 6am to 10pm. That is <strong>112 hours</strong>, and it is all
+        there is. Build a block on the left, click it in your list, then click a start time on the grid. You need at
+        least one block in each of the four categories before the vault will let you go on.
+      </p>
+
+      <div class="gridbox">
+        <p class="armed" id="armed" data-idle="1" role="status">No block selected. Click one in your list to arm it.</p>
+
+        <table class="week" id="week">
+          <caption>Your week. Click a start time to place the armed block. Click a placed block to remove it.</caption>
+          <thead><tr id="weekHead"></tr></thead>
+          <tbody id="weekBody"></tbody>
+        </table>
+
+        <p class="gridnote">
+          <kbd>Tab</kbd> into the grid, then <kbd>&larr;</kbd> <kbd>&uarr;</kbd> <kbd>&darr;</kbd> <kbd>&rarr;</kbd>
+          to move and <kbd>Enter</kbd> to place or remove. <kbd>Esc</kbd> unarms the current block.
+          A triangle marks anything running at 9pm or later.
+        </p>
+
+        <button class="btn ghost sm" id="tvBtn" type="button" style="margin-top:12px" aria-expanded="false" aria-controls="textview">
+          Show my week as a list
+        </button>
+        <div class="textview hidden" id="textview">
+          <h3>My week, written out</h3>
+          <div id="textviewBody"></div>
+        </div>
+      </div>
+
+      <!-- stage 3 -->
+      <section id="stage3" class="hidden" style="margin-top:26px" aria-labelledby="s3h">
+        <h2 class="sr" id="s3h">The ledger</h2>
+        <div class="ledger" id="ledger"></div>
+
+        <div class="panel">
+          <div class="qa">
+            <h3><label for="q1">Where did the time actually go</label></h3>
+            <p>Look at the week you just built. Name the one thing that surprised you, and name the block you would have to move or shrink to make school fit.</p>
+            <textarea id="q1" maxlength="1500" aria-describedby="c1"></textarea>
+            <p class="count" id="c1">0 characters</p>
+          </div>
+
+          <div class="qa">
+            <h3><label for="q2">Your protected hours</label></h3>
+            <p>The 4R paper and the journal article cannot be done in fifteen minute pieces. Give the exact day and start time you protected for that work, and say what you will tell the people in your house about that block.</p>
+            <textarea id="q2" maxlength="1500" aria-describedby="c2"></textarea>
+            <p class="count" id="c2">0 characters</p>
+          </div>
+
+          <button class="btn ghost" id="copyBtn" type="button">Copy my plan for Canvas</button>
+          <p style="font-size:14px;color:var(--ink-2);margin:10px 0 0">
+            Paste this into the Canvas question that follows. It carries your full week, your totals, and both answers.
+          </p>
+        </div>
+
+        <div class="vault hidden" id="vaultBox">
+          <p class="eyebrow" style="margin:0">Lock 2 released &middot; word two of three</p>
+          <p class="word" id="vaultWord">CLARITY</p>
+          <p>Write it down. You need all three words to open the vault.</p>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<div class="dock">
+  <div class="dock-in">
+    <p class="gatemsg" id="gate">Place at least one block in each of the four categories.</p>
+    <button class="btn ghost sm" id="resetBtn" type="button">Start over</button>
+    <button class="btn" id="nextBtn" type="button" disabled>Continue</button>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+<div class="sr" id="live" role="status" aria-live="polite"></div>
+
+<script>
+/* =====================================================================
+   CONFIG — edit here. Logic below reads from this.
+   ===================================================================== */
+const CONFIG = {
+  vaultWord: "CLARITY",
+  intro:[
+    {q:"Where does the credit hour come from?",
+     opts:["A federal law passed in the 1960s",
+           "The Carnegie Foundation, which needed a definition of a college in order to fund professor pensions",
+           "An agreement among state universities",
+           "The accreditation agencies"],
+     a:1,
+     fb:"It started as an accounting problem in 1906. Time in a classroom was the thing they could measure, so that is what got standardised."},
+    {q:"A 3-credit asynchronous online course has no class meetings. What happens to the expected hours?",
+     opts:["They drop to about 3 hours a week","They drop by half","They stay at about 9 hours a week","There is no standard for online courses"],
+     a:2,
+     fb:"Nothing shrinks. The classroom hour moved into the lecture videos and the reading, and it still has to fit in your week."}
+  ],
+  dayStart: 6, dayEnd: 22, slotMinutes: 30,
+  days: ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
+  daysShort: ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],
+  categories: {
+    work:   {label:"Work",    tint:"var(--work-t)", strong:"var(--work-s)"},
+    family: {label:"Family",  tint:"var(--fam-t)",  strong:"var(--fam-s)"},
+    health: {label:"Health",  tint:"var(--hea-t)",  strong:"var(--hea-s)"},
+    social: {label:"Social",  tint:"var(--soc-t)",  strong:"var(--soc-s)"},
+    class1: {label:"Class 1", tint:"var(--cl1-t)",  strong:"var(--cl1-s)"},
+    class2: {label:"Class 2", tint:"var(--cl2-t)",  strong:"var(--cl2-s)"},
+    buffer: {label:"Buffer",  tint:"var(--buf-t)",  strong:"var(--buf-s)"}
+  },
+  lifeCats: ["work","family","health","social"],
+  schoolTasks: [
+    {id:"c1a", cat:"class1", name:"Watching lectures",               est:0.75, place:1.0, mode:"chunk"},
+    {id:"c1b", cat:"class1", name:"Reading course material",         est:3.0,  place:3.0, mode:"chunk"},
+    {id:"c1c", cat:"class1", name:"Reading + prepping assignments",  est:1.5,  place:1.5, mode:"protect"},
+    {id:"c1d", cat:"class1", name:"Discussion post with references", est:1.5,  place:1.5, mode:"protect"},
+    {id:"c1e", cat:"class1", name:"#Powerpost peer response",        est:1.0,  place:1.0, mode:"chunk"},
+    {id:"c2a", cat:"class2", name:"Listening to lectures",           est:0.5,  place:0.5, mode:"chunk"},
+    {id:"c2b", cat:"class2", name:"Video + 5 embedded questions",    est:0.75, place:1.0, mode:"protect"},
+    {id:"c2c", cat:"class2", name:"Read a journal article",          est:1.5,  place:1.5, mode:"protect"},
+    {id:"c2d", cat:"class2", name:"4R reflection paper",             est:3.0,  place:3.0, mode:"protect"},
+    {id:"c2e", cat:"class2", name:"Finding 3 sources",               est:2.5,  place:2.5, mode:"chunk"},
+    {id:"buf", cat:"buffer", name:"Buffer for the week going wrong", est:2.0,  place:2.0, mode:"chunk"}
+  ]
+};
+
+const ROWS = (CONFIG.dayEnd - CONFIG.dayStart) * (60 / CONFIG.slotMinutes);
+const COLS = CONFIG.days.length;
+const SLOT = CONFIG.slotMinutes / 60;
+const CAPACITY = ROWS * COLS * SLOT;
+const SCHOOL_GRID  = +CONFIG.schoolTasks.reduce((a,t)=>a+t.place,0).toFixed(2);
+const SCHOOL_TRUE  = +CONFIG.schoolTasks.reduce((a,t)=>a+t.est,0).toFixed(2);
+
+/* ---------- storage that cannot throw ---------- */
+const Store = (()=>{
+  let ok=true; try{localStorage.setItem("__t","1");localStorage.removeItem("__t")}catch(e){ok=false}
+  const mem={};
+  return{ get:k=>{try{return ok?localStorage.getItem(k):(mem[k]??null)}catch(e){return mem[k]??null}},
+          set:(k,v)=>{try{ok?localStorage.setItem(k,v):(mem[k]=v)}catch(e){mem[k]=v}},
+          del:k=>{try{ok?localStorage.removeItem(k):delete mem[k]}catch(e){delete mem[k]}}, ok };
+})();
+const KEY="sundayNightVault.v2";
+
+/* =====================================================================
+   STATE
+   Life blocks are REUSABLE STAMPS: place as many copies as you like.
+   School tasks are CONSUMABLE: a fixed number of hours per week.
+   The grid stores instance ids, so each copy is removed on its own.
+   ===================================================================== */
+let S = {
+  stage:1, introDone:false, introQuiz:[null,null],
+  stamps:{},                 // life blocks: id -> {id,name,cat,hours}
+  stampOrder:[],
+  tasks:{},                  // school: id -> {...task, remaining}
+  inst:{},                   // instanceId -> {src, kind:'stamp'|'task', name, cat, hours}
+  grid:new Array(ROWS*COLS).fill(null),
+  armed:null,                // {kind:'stamp'|'task', id}
+  repeat:"one",              // one | weekdays | all
+  cursor:{r:0,c:0},
+  seqStamp:0, seqInst:0
+};
+
+const idx=(r,c)=>r*COLS+c;
+const $=s=>document.querySelector(s);
+const el=(t,c)=>{const n=document.createElement(t); if(c)n.className=c; return n;};
+const esc=s=>String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+
+function slotLabel(r){
+  const mins=CONFIG.dayStart*60+r*CONFIG.slotMinutes;
+  let h=Math.floor(mins/60), m=mins%60, ap=h>=12?"pm":"am", hh=h%12||12;
+  return hh+(m?":"+String(m).padStart(2,"0"):"")+ap;
+}
+function fmtH(h){
+  if(h===0.5) return "30 min";
+  if(h===Math.floor(h)) return h+(h===1?" hr":" hrs");
+  return h+" hrs";
+}
+function slots(h){return Math.round(h/SLOT)}
+
+let toastT;
+function toast(msg,tone){
+  const t=$("#toast"); t.textContent=msg; t.dataset.on="1";
+  if(tone) t.dataset.tone=tone; else delete t.dataset.tone;
+  $("#live").textContent=msg;
+  clearTimeout(toastT); toastT=setTimeout(()=>t.dataset.on="0",4200);
+}
+
+/* =====================================================================
+   STAGE 0: the reading gate
+   ===================================================================== */
+function buildIntroQuiz(){
+  const box=$("#quizBox"); box.innerHTML="";
+  CONFIG.intro.forEach((q,qi)=>{
+    const d=el("div","quizq");
+    d.innerHTML=`<p class="q">${qi+1}. ${esc(q.q)}</p>`;
+    q.opts.forEach((o,oi)=>{
+      const l=el("label","opt");
+      l.innerHTML=`<input type="radio" name="iq${qi}" value="${oi}"><span>${esc(o)}</span>`;
+      l.querySelector("input").onchange=()=>{ S.introQuiz[qi]=oi; markIntro(d,qi); introGate(); save(); };
+      d.appendChild(l);
+    });
+    box.appendChild(d);
+  });
+}
+function markIntro(d,qi){
+  const q=CONFIG.intro[qi];
+  [...d.querySelectorAll(".opt")].forEach((x,xi)=>{
+    if(S.introQuiz[qi]===xi) x.dataset.state=(xi===q.a)?"right":"wrong";
+    else if(xi===q.a && S.introQuiz[qi]!==null && S.introQuiz[qi]!==q.a) x.dataset.state="right";
+    else delete x.dataset.state;
+  });
+  let fb=d.querySelector(".fb"); if(!fb){fb=el("p","fb");d.appendChild(fb)}
+  fb.dataset.k=(S.introQuiz[qi]===q.a)?"right":"wrong";
+  fb.textContent=(S.introQuiz[qi]===q.a?"Correct. ":"Not quite. ")+q.fb;
+}
+function introReady(){return CONFIG.intro.every((q,i)=>S.introQuiz[i]===q.a)}
+function introGate(){ $("#introBtn").disabled=!introReady(); }
+function showApp(){
+  const on=S.introDone;
+  $("#s0").classList.toggle("hidden",on);
+  $("#appCols").classList.toggle("hidden",!on);
+  $("#stages").classList.toggle("hidden",!on);
+  document.querySelector(".dock").style.display = on ? "" : "none";
+  $("#clockline").textContent = on
+    ? "8:00 pm \u00b7 Sunday \u00b7 Lock 2 of 3"
+    : "Briefing \u00b7 before you open Lock 2";
+  if(!on) return;
+  document.querySelectorAll("#stages li").forEach(li=>{
+    const n=+li.dataset.s;
+    li.dataset.on=(n===S.stage)?"1":"0"; li.dataset.done=(n<S.stage)?"1":"0";
+  });
+}
+$("#introBtn").onclick=()=>{
+  if(!introReady()) return;
+  S.introDone=true; showApp(); save();
+  window.scrollTo({top:0,behavior:"smooth"});
+  toast("Lock 2. Build your real week first, then school goes in what is left.");
+};
+
+/* =====================================================================
+   BUILD STATIC UI
+   ===================================================================== */
+function buildCatPicker(){
+  const box=$("#catPick"); box.innerHTML="";
+  CONFIG.lifeCats.forEach((k,i)=>{
+    const c=CONFIG.categories[k];
+    const b=el("button","catbtn"); b.type="button"; b.dataset.cat=k;
+    b.setAttribute("aria-pressed", i===0?"true":"false");
+    b.innerHTML=`<i style="background:${c.tint};border-color:${c.strong}"></i><span>${c.label}</span>`;
+    b.onclick=()=>{[...box.children].forEach(x=>x.setAttribute("aria-pressed","false"));
+                   b.setAttribute("aria-pressed","true"); syncNamePlaceholder();};
+    box.appendChild(b);
+  });
+  syncNamePlaceholder();
+}
+function currentCat(){return $("#catPick").querySelector('[aria-pressed="true"]').dataset.cat}
+function syncNamePlaceholder(){
+  const c=CONFIG.categories[currentCat()];
+  $("#blkName").placeholder = ({work:"Warehouse shift",family:"Dinner and bedtime",
+                                health:"Gym",social:"Church"})[currentCat()] || c.label;
+}
+function buildRepeat(){
+  const box=$("#repPick"); box.innerHTML="";
+  [["one","This day"],["weekdays","Mon\u2013Fri"],["all","All 7 days"]].forEach(([v,l],i)=>{
+    const b=el("button","catbtn"); b.type="button"; b.dataset.rep=v;
+    b.setAttribute("aria-pressed", i===0?"true":"false");
+    b.textContent=l;
+    b.onclick=()=>{[...box.children].forEach(x=>x.setAttribute("aria-pressed","false"));
+                   b.setAttribute("aria-pressed","true"); S.repeat=v; renderArmed(); save();};
+    box.appendChild(b);
+  });
+}
+function buildHrs(){
+  const s=$("#blkHrs"); s.innerHTML="";
+  for(let h=0.5;h<=12;h+=0.5){
+    const o=el("option"); o.value=h; o.textContent=fmtH(h);
+    if(h===1) o.selected=true; s.appendChild(o);
+  }
+}
+function buildGrid(){
+  const head=$("#weekHead"); head.innerHTML="";
+  const th0=el("th","tcol"); th0.scope="col"; th0.innerHTML='<span class="sr">Time of day</span>';
+  head.appendChild(th0);
+  CONFIG.days.forEach((d,i)=>{const th=el("th");th.scope="col";
+    th.innerHTML=`<abbr title="${d}" style="text-decoration:none">${CONFIG.daysShort[i]}</abbr>`;head.appendChild(th);});
+
+  const body=$("#weekBody"); body.innerHTML="";
+  for(let r=0;r<ROWS;r++){
+    const tr=el("tr");
+    const onHour=(r%(60/CONFIG.slotMinutes))===0;
+    if(onHour) tr.className="hourtop";
+    const tl=el("td","tlab"+(onHour?"":" half"));
+    tl.scope="row"; tl.textContent=slotLabel(r);
+    tr.appendChild(tl);
+    for(let c=0;c<COLS;c++){
+      const td=el("td","cell");
+      td.dataset.r=r; td.dataset.c=c; td.tabIndex=-1;
+      td.addEventListener("click",()=>{S.cursor={r,c};onCell(r,c)});
+      td.addEventListener("mouseenter",()=>ghost(r,c));
+      td.addEventListener("mouseleave",clearGhost);
+      tr.appendChild(td);
+    }
+    body.appendChild(tr);
+  }
+  $("#week").addEventListener("keydown",onKey);
+}
+
+/* =====================================================================
+   PLACEMENT
+   ===================================================================== */
+function armedBlock(){
+  if(!S.armed) return null;
+  return S.armed.kind==="stamp" ? S.stamps[S.armed.id] : S.tasks[S.armed.id];
+}
+function armedHours(){
+  const b=armedBlock(); if(!b) return 0;
+  return S.armed.kind==="stamp" ? b.hours : b.remaining;
+}
+function armedIsProtected(){
+  const b=armedBlock();
+  return !!b && S.armed.kind==="task" && b.mode==="protect";
+}
+function targetCols(c){
+  if(S.armed && S.armed.kind==="task") return [c];        // school never repeats
+  if(S.repeat==="weekdays") return [1,2,3,4,5];
+  if(S.repeat==="all") return [0,1,2,3,4,5,6];
+  return [c];
+}
+function runFree(r,c,n){
+  if(r+n>ROWS) return false;
+  for(let i=0;i<n;i++) if(S.grid[idx(r+i,c)]!==null) return false;
+  return true;
+}
+function freeRunLength(r,c){
+  let n=0; while(r+n<ROWS && S.grid[idx(r+n,c)]===null) n++;
+  return n;
+}
+
+function ghost(r,c){
+  clearGhost();
+  const b=armedBlock(); if(!b) return;
+  const cols=targetCols(c);
+  cols.forEach(cc=>{
+    const want=slots(armedHours());
+    const avail=freeRunLength(r,cc);
+    const n=armedIsProtected()?want:Math.min(want,avail);
+    const fits=armedIsProtected()?runFree(r,cc,want):(avail>0);
+    for(let i=0;i<Math.max(1,n);i++){
+      if(r+i>=ROWS) break;
+      const td=cellAt(r+i,cc); if(!td) continue;
+      if(S.grid[idx(r+i,cc)]!==null){ if(!fits) td.dataset.blocked="1"; break; }
+      td.dataset[fits?"ghost":"blocked"]="1";
+    }
+    if(!fits){ const td=cellAt(r,cc); if(td) td.dataset.blocked="1"; }
+  });
+}
+function clearGhost(){
+  document.querySelectorAll('td.cell[data-ghost],td.cell[data-blocked]').forEach(td=>{
+    delete td.dataset.ghost; delete td.dataset.blocked;
+  });
+}
+function cellAt(r,c){return document.querySelector(`td.cell[data-r="${r}"][data-c="${c}"]`)}
+
+function onCell(r,c){
+  const here=S.grid[idx(r,c)];
+  if(here!==null){ removeInstance(here,c); return; }
+  if(!S.armed){ toast("Click a block in your list first, then click a start time."); return; }
+
+  const b=armedBlock();
+  const cols=targetCols(c);
+  let placedCols=[], skipped=[], hoursUsed=0;
+
+  for(const cc of cols){
+    if(S.armed.kind==="task" && S.tasks[S.armed.id].remaining<=0) break;
+    const want = S.armed.kind==="stamp" ? slots(b.hours) : slots(S.tasks[S.armed.id].remaining);
+    const avail = freeRunLength(r,cc);
+
+    let n;
+    if(armedIsProtected()){
+      if(!runFree(r,cc,want)){ skipped.push(CONFIG.days[cc]); continue; }
+      n=want;
+    } else if(S.armed.kind==="stamp"){
+      if(!runFree(r,cc,want)){ skipped.push(CONFIG.days[cc]); continue; }
+      n=want;                          // life blocks place whole or not at all
+    } else {
+      n=Math.min(want,avail);
+      if(n<=0){ skipped.push(CONFIG.days[cc]); continue; }
+    }
+
+    const iid="i"+(++S.seqInst);
+    S.inst[iid]={src:S.armed.id, kind:S.armed.kind, name:b.name, cat:b.cat, hours:n*SLOT};
+    for(let i=0;i<n;i++) S.grid[idx(r+i,cc)]=iid;
+    if(S.armed.kind==="task") S.tasks[S.armed.id].remaining=+(S.tasks[S.armed.id].remaining-n*SLOT).toFixed(2);
+    placedCols.push(CONFIG.days[cc]); hoursUsed+=n*SLOT;
+  }
+
+  if(!placedCols.length){
+    toast(`${b.name} needs ${fmtH(armedHours())} clear starting at ${slotLabel(r)}. That does not fit. Try an earlier time or clear something first.`,"warn");
+    return;
+  }
+
+  let msg=`Placed ${b.name}: ${fmtH(+hoursUsed.toFixed(2))} on ${placedCols.join(", ")} starting ${slotLabel(r)}.`;
+  if(skipped.length) msg+=` No room on ${skipped.join(", ")}.`;
+  if(S.armed.kind==="task"){
+    const left=S.tasks[S.armed.id].remaining;
+    msg += left>0 ? ` ${fmtH(left)} still to place.` : ` That task is done.`;
+    if(left<=0) S.armed=null;
+  }
+  toast(msg, skipped.length?"warn":null);
+  clearGhost(); render(); save();
+}
+
+function removeInstance(iid,c){
+  const inst=S.inst[iid]; if(!inst) return;
+  let n=0;
+  for(let i=0;i<S.grid.length;i++) if(S.grid[i]===iid){S.grid[i]=null;n++}
+  if(inst.kind==="task" && S.tasks[inst.src])
+    S.tasks[inst.src].remaining=+(S.tasks[inst.src].remaining+n*SLOT).toFixed(2);
+  delete S.inst[iid];
+  toast(`Removed ${inst.name} (${fmtH(n*SLOT)}).`);
+  render(); save();
+}
+
+function onKey(e){
+  if(e.key==="Escape"){ S.armed=null; clearGhost(); render(); toast("Nothing armed."); return; }
+  const nav=["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","Enter"," "];
+  if(!nav.includes(e.key)) return;
+  e.preventDefault();
+  let{r,c}=S.cursor;
+  if(e.key==="ArrowUp")    r=Math.max(0,r-1);
+  if(e.key==="ArrowDown")  r=Math.min(ROWS-1,r+1);
+  if(e.key==="ArrowLeft")  c=Math.max(0,c-1);
+  if(e.key==="ArrowRight") c=Math.min(COLS-1,c+1);
+  S.cursor={r,c};
+  if(e.key==="Enter"||e.key===" "){ onCell(r,c); focusCursor(); }
+  else{
+    paintCursor(); focusCursor();
+    const id=S.grid[idx(r,c)];
+    $("#live").textContent=CONFIG.days[c]+" "+slotLabel(r)+(id?", "+S.inst[id].name:", empty");
+  }
+}
+function paintCursor(){
+  document.querySelectorAll("td.cell").forEach(td=>{
+    const on=(+td.dataset.r===S.cursor.r&&+td.dataset.c===S.cursor.c);
+    td.tabIndex=on?0:-1;
+    if(on) td.dataset.cursor="1"; else delete td.dataset.cursor;
+  });
+}
+function focusCursor(){const td=cellAt(S.cursor.r,S.cursor.c); if(td) td.focus({preventScroll:false});}
+
+/* =====================================================================
+   ADD / DELETE BLOCKS
+   ===================================================================== */
+$("#addBlk").onclick=()=>{
+  const cat=currentCat();
+  const name=($("#blkName").value.trim()||CONFIG.categories[cat].label).slice(0,30);
+  const hours=parseFloat($("#blkHrs").value);
+  const id="s"+(++S.seqStamp);
+  S.stamps[id]={id,name,cat,hours};
+  S.stampOrder.push(id);
+  S.armed={kind:"stamp",id};
+  $("#blkName").value="";
+  toast(`${name} (${fmtH(hours)}) is armed. Click a start time on the grid.`);
+  render(); save(); $("#blkName").focus();
+};
+$("#blkName").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();$("#addBlk").click();}});
+
+function deleteStamp(id){
+  const st=S.stamps[id]; if(!st) return;
+  Object.keys(S.inst).forEach(iid=>{
+    if(S.inst[iid].kind==="stamp"&&S.inst[iid].src===id){
+      for(let i=0;i<S.grid.length;i++) if(S.grid[i]===iid) S.grid[i]=null;
+      delete S.inst[iid];
+    }
+  });
+  delete S.stamps[id];
+  S.stampOrder=S.stampOrder.filter(x=>x!==id);
+  if(S.armed&&S.armed.kind==="stamp"&&S.armed.id===id) S.armed=null;
+  toast(`Deleted ${st.name} and cleared it from the grid.`);
+  render(); save();
+}
+function loadTasks(){
+  CONFIG.schoolTasks.forEach(t=>{ S.tasks[t.id]={...t, remaining:t.place}; });
+}
+function placedCount(stampId){
+  return Object.values(S.inst).filter(i=>i.kind==="stamp"&&i.src===stampId).length;
+}
+function placedHours(stampId){
+  return Object.values(S.inst).filter(i=>i.kind==="stamp"&&i.src===stampId)
+               .reduce((a,i)=>a+i.hours,0);
+}
+
+/* =====================================================================
+   RENDER
+   ===================================================================== */
+function render(){
+  renderStages(); renderArmed(); renderTray(); renderGrid(); renderDial(); renderGate();
+  if(S.stage===3) renderLedger();
+  if(!$("#textview").classList.contains("hidden")) renderTextView();
+}
+function renderStages(){
+  document.querySelectorAll("#stages li").forEach(li=>{
+    const s=+li.dataset.s;
+    li.dataset.on=(s===S.stage)?"1":"0";
+    li.dataset.done=(s<S.stage)?"1":"0";
+  });
+}
+function renderArmed(){
+  const a=$("#armed"), b=armedBlock();
+  if(!b){ a.dataset.idle="1"; a.textContent="No block selected. Click one in your list to arm it."; return; }
+  delete a.dataset.idle;
+  const rep = (S.armed.kind==="stamp"&&S.repeat!=="one")
+    ? (S.repeat==="weekdays"?" on Monday through Friday":" on all seven days") : "";
+  const kind = armedIsProtected() ? " This one must go in a single unbroken run." : "";
+  a.innerHTML=`Armed: <b>${esc(b.name)}</b>, ${fmtH(armedHours())}${rep}. Click a start time on the grid.${kind}`;
+}
+function renderTray(){
+  const tray=$("#tray"); tray.innerHTML="";
+  $("#trayTitle").textContent = S.stage===1 ? "My blocks" : "School hours to place";
+  let rows=0;
+
+  if(S.stage===1){
+    S.stampOrder.forEach(id=>{
+      const st=S.stamps[id], c=CONFIG.categories[st.cat];
+      const n=placedCount(id), h=placedHours(id);
+      const btn=el("div","chip");
+      btn.style.setProperty("--cs",c.strong);
+      btn.setAttribute("aria-pressed", (S.armed&&S.armed.kind==="stamp"&&S.armed.id===id)?"true":"false");
+      btn.setAttribute("role","button"); btn.tabIndex=0;
+      btn.innerHTML=
+        `<span class="nm">${esc(st.name)}<span class="meta">${c.label} \u00b7 ${fmtH(st.hours)} per block \u00b7 `+
+        `${n===0?"not placed yet":"on the grid "+n+(n===1?" time":" times")}</span></span>`+
+        `<span><span class="hrs">${h.toFixed(1)}h</span> <button class="del" type="button" `+
+        `aria-label="Delete ${esc(st.name)}">Delete</button></span>`;
+      const arm=()=>{ S.armed=(S.armed&&S.armed.kind==="stamp"&&S.armed.id===id)?null:{kind:"stamp",id}; render(); };
+      btn.onclick=e=>{ if(e.target.classList.contains("del")){deleteStamp(id);return;} arm(); };
+      btn.onkeydown=e=>{ if(e.key==="Enter"||e.key===" "){e.preventDefault();arm();} };
+      tray.appendChild(btn); rows++;
+    });
+  } else {
+    CONFIG.schoolTasks.forEach(t=>{
+      const task=S.tasks[t.id], c=CONFIG.categories[t.cat];
+      const done=task.remaining<=0;
+      const btn=el("div","chip");
+      btn.style.setProperty("--cs",c.strong);
+      btn.dataset.done=done?"1":"0";
+      btn.setAttribute("role","button"); btn.tabIndex=0;
+      btn.setAttribute("aria-pressed",(S.armed&&S.armed.kind==="task"&&S.armed.id===t.id)?"true":"false");
+      const estTxt = t.est!==t.place ? `${fmtH(t.est)} of work, takes a ${fmtH(t.place)} slot` : fmtH(t.est);
+      btn.innerHTML=
+        `<span class="nm">${esc(t.name)}<span class="meta">${c.label} \u00b7 ${estTxt} \u00b7 `+
+        `${t.mode==="protect"?"one unbroken sitting":"can be split up"}</span></span>`+
+        `<span class="hrs">${done?"\u2713 done":fmtH(task.remaining)}</span>`;
+      const arm=()=>{ if(done){toast("Already placed. Click it on the grid to take it back.");return;}
+                      S.armed=(S.armed&&S.armed.kind==="task"&&S.armed.id===t.id)?null:{kind:"task",id:t.id};
+                      render(); };
+      btn.onclick=arm;
+      btn.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();arm();}};
+      tray.appendChild(btn); rows++;
+    });
+  }
+
+  const empty=$("#trayEmpty");
+  empty.textContent="No blocks yet. Build your first one above.";
+  empty.classList.toggle("hidden", rows>0);
+}
+function renderGrid(){
+  document.querySelectorAll("td.cell").forEach(td=>{
+    const r=+td.dataset.r,c=+td.dataset.c,i=idx(r,c);
+    td.innerHTML=""; delete td.dataset.first; delete td.dataset.late;
+    const iid=S.grid[i];
+    if(iid!==null){
+      const inst=S.inst[iid], cat=CONFIG.categories[inst.cat];
+      const first=(r===0)||(S.grid[idx(r-1,c)]!==iid);
+      const f=el("div","fill");
+      f.style.setProperty("--ct",cat.tint); f.style.setProperty("--cs",cat.strong);
+      const l=el("span","lbl"); l.textContent=inst.name;
+      const d=el("span","dur"); d.textContent=fmtH(inst.hours);
+      f.appendChild(l); f.appendChild(d);
+      td.appendChild(f);
+      td.dataset.first=first?"1":"0";
+      if(CONFIG.dayStart+r*SLOT>=21) td.dataset.late="1";
+      td.setAttribute("aria-label",
+        `${inst.name}, ${cat.label}, ${CONFIG.days[c]} ${slotLabel(r)}. Press Enter to remove.`);
+    } else {
+      td.setAttribute("aria-label",`${CONFIG.days[c]} ${slotLabel(r)}, free`);
+    }
+  });
+  paintCursor();
+}
+function totals(){
+  const t={}; Object.keys(CONFIG.categories).forEach(k=>t[k]=0);
+  for(let i=0;i<S.grid.length;i++){
+    const iid=S.grid[i]; if(iid!==null) t[S.inst[iid].cat]+=SLOT;
+  }
+  const used=Object.values(t).reduce((a,b)=>a+b,0);
+  return {byCat:t, used:+used.toFixed(1), free:+(CAPACITY-used).toFixed(1)};
+}
+function renderDial(){
+  const {byCat,used,free}=totals();
+  const g=$("#dialsegs"); g.innerHTML="";
+  const R=58, C=2*Math.PI*R; let off=0;
+  const spoken=[];
+  Object.keys(CONFIG.categories).forEach(k=>{
+    const h=byCat[k]; if(h<=0) return;
+    spoken.push(`${CONFIG.categories[k].label} ${h.toFixed(1)} hours`);
+    const frac=h/CAPACITY;
+    const ci=document.createElementNS("http://www.w3.org/2000/svg","circle");
+    ci.setAttribute("cx","70"); ci.setAttribute("cy","70"); ci.setAttribute("r",R);
+    ci.setAttribute("fill","none");
+    ci.setAttribute("stroke",getComputedStyle(document.documentElement)
+      .getPropertyValue(CONFIG.categories[k].strong.replace(/var\(|\)/g,"")).trim()||"#444");
+    ci.setAttribute("stroke-width","16");
+    ci.setAttribute("stroke-dasharray",`${(frac*C).toFixed(2)} ${C.toFixed(2)}`);
+    ci.setAttribute("stroke-dashoffset",`${(-off*C).toFixed(2)}`);
+    g.appendChild(ci); off+=frac;
+  });
+  $("#dialNum").textContent=used;
+  $("#dialAlt").textContent = spoken.length
+    ? `${used} of 112 hours claimed. ${spoken.join(", ")}. ${free} hours unclaimed.`
+    : "Nothing claimed yet. All 112 hours are free.";
+
+  const L=$("#legend");
+  L.innerHTML='<caption class="sr">Hours claimed by category</caption>'+
+    '<thead><tr><th></th><th scope="col">Category</th><th scope="col" style="text-align:right">Hrs</th></tr></thead>';
+  const tb=el("tbody");
+  Object.keys(CONFIG.categories).forEach(k=>{
+    if(byCat[k]<=0 && S.stage===1 && ["class1","class2","buffer"].includes(k)) return;
+    const c=CONFIG.categories[k];
+    const tr=el("tr");
+    tr.innerHTML=`<td class="sw"><i style="background:${c.tint};border-color:${c.strong}"></i></td>`+
+                 `<td>${c.label}</td><td class="num">${byCat[k].toFixed(1)}</td>`;
+    tb.appendChild(tr);
+  });
+  const tr=el("tr","total");
+  tr.innerHTML=`<td class="sw"></td><td>Unclaimed</td><td class="num">${free.toFixed(1)}</td>`;
+  tb.appendChild(tr); L.appendChild(tb);
+}
+
+/* =====================================================================
+   TEXT EQUIVALENT
+   ===================================================================== */
+function weekRuns(){
+  const runs=[];
+  for(let c=0;c<COLS;c++){
+    let r=0;
+    while(r<ROWS){
+      const iid=S.grid[idx(r,c)];
+      if(iid===null){r++;continue}
+      let e=r; while(e<ROWS-1&&S.grid[idx(e+1,c)]===iid) e++;
+      runs.push({c,r,e,iid}); r=e+1;
+    }
+  }
+  return runs;
+}
+function renderTextView(){
+  const runs=weekRuns(), box=$("#textviewBody"); box.innerHTML="";
+  if(!runs.length){ box.innerHTML='<p style="margin:0;color:var(--ink-2)">Nothing placed yet.</p>'; return; }
+  CONFIG.days.forEach((d,c)=>{
+    const mine=runs.filter(x=>x.c===c);
+    if(!mine.length) return;
+    const h=el("p","day"); h.textContent=d; box.appendChild(h);
+    const ul=el("ul");
+    mine.forEach(x=>{
+      const inst=S.inst[x.iid];
+      const li=el("li");
+      li.textContent=`${slotLabel(x.r)} to ${slotLabel(x.e+1)} — ${inst.name} (${CONFIG.categories[inst.cat].label}, ${fmtH((x.e-x.r+1)*SLOT)})`;
+      ul.appendChild(li);
+    });
+    box.appendChild(ul);
+  });
+}
+$("#tvBtn").onclick=()=>{
+  const tv=$("#textview"), open=!tv.classList.contains("hidden");
+  tv.classList.toggle("hidden",open);
+  $("#tvBtn").setAttribute("aria-expanded",String(!open));
+  $("#tvBtn").textContent = open?"Show my week as a list":"Hide the list";
+  if(!open) renderTextView();
+};
+
+/* =====================================================================
+   GATES
+   ===================================================================== */
+function stage1Ready(){const{byCat}=totals(); return CONFIG.lifeCats.every(k=>byCat[k]>0)}
+function stage2Ready(){return CONFIG.schoolTasks.every(t=>S.tasks[t.id].remaining<=0)}
+function stage3Ready(){return $("#q1").value.trim().length>=120 && $("#q2").value.trim().length>=120}
+
+function renderGate(){
+  const g=$("#gate"), btn=$("#nextBtn");
+  g.className="gatemsg";
+  if(S.stage===1){
+    const{byCat,free}=totals();
+    const miss=CONFIG.lifeCats.filter(k=>byCat[k]<=0).map(k=>CONFIG.categories[k].label);
+    if(miss.length){ g.innerHTML=`Still need a block for: <b>${miss.join(", ")}</b>.`; btn.disabled=true; }
+    else{ g.className="gatemsg ready";
+          g.innerHTML=`Your week is on the grid. <b>${free.toFixed(1)} hours</b> are still unclaimed.`;
+          btn.disabled=false; }
+    btn.textContent="Now add school";
+  } else if(S.stage===2){
+    const left=+CONFIG.schoolTasks.reduce((a,t)=>a+Math.max(0,S.tasks[t.id].remaining),0).toFixed(1);
+    const{free}=totals();
+    if(left>0){
+      if(free<left){ g.className="gatemsg warn";
+        g.innerHTML=`<b>${fmtH(left)}</b> of school left to place and only <b>${free.toFixed(1)} hours</b> free. Something has to move.`;
+      } else g.innerHTML=`<b>${fmtH(left)}</b> of school still to place.`;
+      btn.disabled=true;
+    } else{ g.className="gatemsg ready"; g.innerHTML=`All ${SCHOOL_GRID} hours are on the grid.`; btn.disabled=false; }
+    btn.textContent="Read the ledger";
+  } else {
+    const ok=stage3Ready();
+    g.className="gatemsg"+(ok?" ready":"");
+    g.innerHTML=ok?"Both answers are in. Copy your plan, then release the lock.":"Answer both questions to release Lock 2.";
+    btn.disabled=!ok; btn.textContent="Release Lock 2";
+  }
+}
+
+$("#nextBtn").onclick=()=>{
+  if(S.stage===1&&stage1Ready()){
+    S.stage=2; S.armed=null; S.repeat="one";
+    $("#makerPanel").classList.add("hidden");
+    $("#repeatPanel").classList.add("hidden");
+    $("#stageTitle").textContent="Place your school hours";
+    $("#stageLede").innerHTML=
+      `Two courses plus a buffer: <strong>${SCHOOL_TRUE} hours</strong> of real work, which takes up `+
+      `${SCHOOL_GRID} hours of grid because two 45-minute tasks round up into hour slots. Blocks marked `+
+      `<strong>one unbroken sitting</strong> will only drop where there is a long enough clear run, because a 4R paper `+
+      `does not survive being chopped into fifteen minute pieces. Blocks marked <strong>can be split up</strong> `+
+      `will go anywhere, including the cracks.`;
+    window.scrollTo({top:0,behavior:"smooth"}); render(); save();
+  } else if(S.stage===2&&stage2Ready()){
+    S.stage=3; $("#stage3").classList.remove("hidden");
+    $("#stageTitle").textContent="Read the ledger";
+    $("#stageLede").textContent="This is your week as you built it. Read the numbers, then answer both questions.";
+    render(); save(); $("#stage3").scrollIntoView({behavior:"smooth",block:"start"});
+  } else if(S.stage===3&&stage3Ready()){
+    $("#vaultBox").classList.remove("hidden");
+    $("#vaultWord").textContent=CONFIG.vaultWord;
+    $("#vaultBox").scrollIntoView({behavior:"smooth",block:"center"});
+    save();
+  }
+};
+
+/* =====================================================================
+   LEDGER + EXPORT
+   ===================================================================== */
+function renderLedger(){
+  const{byCat,used,free}=totals();
+  const school=+(byCat.class1+byCat.class2+byCat.buffer).toFixed(1);
+  let late=0,wknd=0;
+  for(let i=0;i<S.grid.length;i++){
+    const iid=S.grid[i]; if(iid===null) continue;
+    if(!["class1","class2","buffer"].includes(S.inst[iid].cat)) continue;
+    const r=Math.floor(i/COLS), c=i%COLS;
+    if(CONFIG.dayStart+r*SLOT>=21) late+=SLOT;
+    if(c===0||c===6) wknd+=SLOT;
+  }
+  const pct=school?Math.round(wknd/school*100):0;
+  const cards=[
+    {k:"Hours claimed",v:used,s:"of 112",t:used>106?"warn":""},
+    {k:"School on the grid",v:school,s:"hrs",t:"ok"},
+    {k:"Unclaimed",v:free,s:"hrs",t:free<6?"warn":""},
+    {k:"School after 9pm",v:late,s:"hrs",t:late>=4?"warn":""},
+    {k:"School on Sat or Sun",v:pct,s:"%",t:pct>60?"warn":""}
+  ];
+  const L=$("#ledger"); L.innerHTML="";
+  cards.forEach(c=>{
+    const d=el("div","stat"); if(c.t) d.dataset.tone=c.t;
+    d.innerHTML=`<p class="k">${c.k}</p><p class="v">${c.v} <small>${c.s}</small></p>`;
+    L.appendChild(d);
+  });
+}
+function planText(){
+  const{byCat,used,free}=totals();
+  const L=["THE SUNDAY NIGHT VAULT — MY WEEK",""];
+  L.push("HOURS BY CATEGORY (6am to 10pm, 112 hours available)");
+  Object.keys(CONFIG.categories).forEach(k=>{
+    if(byCat[k]>0) L.push("  "+CONFIG.categories[k].label.padEnd(10)+byCat[k].toFixed(1)+" hrs");
+  });
+  L.push("  "+"Unclaimed".padEnd(10)+free.toFixed(1)+" hrs");
+  L.push("  "+"TOTAL".padEnd(10)+used.toFixed(1)+" hrs","");
+  L.push("MY WEEK AS PLACED");
+  const runs=weekRuns();
+  if(!runs.length) L.push("  (nothing placed)");
+  CONFIG.days.forEach((d,c)=>{
+    const mine=runs.filter(x=>x.c===c); if(!mine.length) return;
+    L.push("  "+d);
+    mine.forEach(x=>{
+      const inst=S.inst[x.iid];
+      L.push("    "+slotLabel(x.r)+"-"+slotLabel(x.e+1)+"  "+inst.name+
+             "  ["+CONFIG.categories[inst.cat].label+", "+fmtH((x.e-x.r+1)*SLOT)+"]");
+    });
+  });
+  L.push("","Q1. WHERE DID THE TIME ACTUALLY GO", $("#q1").value.trim()||"(no answer)");
+  L.push("","Q2. MY PROTECTED HOURS", $("#q2").value.trim()||"(no answer)");
+  L.push("","Lock 2 word: "+CONFIG.vaultWord);
+  return L.join("\n");
+}
+$("#copyBtn").onclick=async()=>{
+  const txt=planText();
+  try{ await navigator.clipboard.writeText(txt); toast("Plan copied. Paste it into the Canvas question."); }
+  catch(e){
+    const ta=el("textarea"); ta.value=txt; ta.style.position="fixed"; ta.style.top="-2000px";
+    document.body.appendChild(ta); ta.select();
+    try{document.execCommand("copy");toast("Plan copied.")}catch(e2){toast("Copy failed. Select the text and copy it by hand.","warn")}
+    ta.remove();
+  }
+};
+["q1","q2"].forEach((q,i)=>{
+  const ta=$("#"+q);
+  ta.addEventListener("input",()=>{
+    const n=ta.value.trim().length, c=$("#c"+(i+1));
+    c.textContent = n<120 ? `${n} characters. ${120-n} more needed.` : `${n} characters. Long enough.`;
+    c.dataset.ok = n>=120?"1":"0";
+    renderGate(); save();
+  });
+});
+
+/* =====================================================================
+   SAVE / LOAD / BOOT
+   ===================================================================== */
+function save(){
+  try{ Store.set(KEY, JSON.stringify({
+    stage:S.stage, stamps:S.stamps, stampOrder:S.stampOrder,
+    tasks:S.tasks, inst:S.inst, grid:S.grid, repeat:S.repeat,
+    seqStamp:S.seqStamp, seqInst:S.seqInst,
+    q1:$("#q1").value, q2:$("#q2").value }));
+  }catch(e){}
+}
+function load(){
+  const raw=Store.get(KEY); if(!raw) return false;
+  try{
+    const d=JSON.parse(raw);
+    if(!d||!Array.isArray(d.grid)||d.grid.length!==ROWS*COLS) return false;
+    Object.assign(S,{stage:d.stage||1, introDone:!!d.introDone, introQuiz:d.introQuiz||[null,null], stamps:d.stamps||{}, stampOrder:d.stampOrder||[],
+      tasks:d.tasks||{}, inst:d.inst||{}, grid:d.grid, repeat:d.repeat||"one",
+      seqStamp:d.seqStamp||0, seqInst:d.seqInst||0, armed:null});
+    CONFIG.schoolTasks.forEach(t=>{ if(!S.tasks[t.id]) S.tasks[t.id]={...t,remaining:t.place}; });
+    $("#q1").value=d.q1||""; $("#q2").value=d.q2||"";
+    if(S.stage>=2){ $("#makerPanel").classList.add("hidden"); $("#repeatPanel").classList.add("hidden"); }
+    if(S.stage===2) $("#stageTitle").textContent="Place your school hours";
+    if(S.stage===3){ $("#stageTitle").textContent="Read the ledger"; $("#stage3").classList.remove("hidden"); }
+    return true;
+  }catch(e){ return false; }
+}
+$("#resetBtn").onclick=()=>{
+  if(!confirm("Clear the whole week and start over? This cannot be undone.")) return;
+  Store.del(KEY); location.reload();
+};
+
+buildCatPicker(); buildRepeat(); buildHrs(); buildGrid(); buildIntroQuiz();
+const restored=load(); if(!restored) loadTasks();
+["q1","q2"].forEach((q,i)=>{
+  const n=$("#"+q).value.trim().length, c=$("#c"+(i+1));
+  c.textContent = n<120 ? `${n} characters. ${120-n} more needed.` : `${n} characters. Long enough.`;
+  c.dataset.ok = n>=120?"1":"0";
+});
+CONFIG.intro.forEach((q,i)=>{
+  if(S.introQuiz[i]===null||S.introQuiz[i]===undefined) return;
+  const d=document.querySelectorAll("#quizBox .quizq")[i]; if(!d) return;
+  const inp=d.querySelector(`input[value="${S.introQuiz[i]}"]`); if(inp) inp.checked=true;
+  markIntro(d,i);
+});
+introGate();
+render();
+if(restored) toast("Picked up where you left off.");
+</script>
+</body>
+</html>
