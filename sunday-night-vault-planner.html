@@ -577,9 +577,9 @@ textarea{min-height:130px;resize:vertical;line-height:1.6}
             <p class="count" id="c2">0 characters</p>
           </div>
 
-          <button class="btn ghost" id="copyBtn" type="button">Copy my plan (for your own notes)</button>
+          <button class="btn ghost" id="copyBtn" type="button">Copy my plan</button>
           <p style="font-size:14px;color:var(--ink-2);margin:10px 0 0">
-            Optional. This copies your full week, your totals, and both answers, in case you want to keep them or paste them somewhere. You do not need to hand this in.
+            This copies your full week, your totals, and both answers. Keep these for your own self-improvement.
           </p>
         </div>
 
@@ -1240,8 +1240,8 @@ function renderGate(){
     if(ok) g.innerHTML="Both answers are in. Copy your plan, then release the lock.";
     else{
       const short=[];
-      if(n1<120) short.push(`<b>&ldquo;Where did the time actually go&rdquo;</b> needs ${120-n1} more characters`);
-      if(n2<120) short.push(`<b>&ldquo;Your protected hours&rdquo;</b> needs ${120-n2} more characters`);
+      if(n1<120) short.push(`<b>&ldquo;Where did the time actually go&rdquo;</b> needs ${120-n1} more character${120-n1===1?"":"s"}`);
+      if(n2<120) short.push(`<b>&ldquo;Your protected hours&rdquo;</b> needs ${120-n2} more character${120-n2===1?"":"s"}`);
       g.innerHTML=short.join(", and ")+".";
     }
     btn.disabled=!ok; btn.textContent="Release Lock 2";
@@ -1331,11 +1331,11 @@ function planText(){
 }
 $("#copyBtn").onclick=async()=>{
   const txt=planText();
-  try{ await navigator.clipboard.writeText(txt); toast("Plan copied."); }
+  try{ await navigator.clipboard.writeText(txt); toast("Plan copied. Keep these for your own self-improvement."); }
   catch(e){
     const ta=el("textarea"); ta.value=txt; ta.style.position="fixed"; ta.style.top="-2000px";
     document.body.appendChild(ta); ta.select();
-    try{document.execCommand("copy");toast("Plan copied.")}catch(e2){toast("Copy failed. Select the text and copy it by hand.","warn")}
+    try{document.execCommand("copy");toast("Plan copied. Keep these for your own self-improvement.")}catch(e2){toast("Copy failed. Select the text and copy it by hand.","warn")}
     ta.remove();
   }
 };

@@ -344,7 +344,7 @@ a.nextbtn .arw{margin-left:8px}
       </p>
       <textarea id="reflect" maxlength="1500" aria-describedby="rc"></textarea>
       <p class="count" id="rc">0 characters</p>
-      <button class="btn ghost sm" id="copyBtn" type="button" style="margin-top:12px">Copy my answers (for your own notes)</button>
+      <button class="btn ghost sm" id="copyBtn" type="button" style="margin-top:12px">Copy my answers</button>
     </div>
 
     <div class="vault hidden" id="vaultBox">
@@ -725,7 +725,7 @@ function answerText(){
 }
 $("#copyBtn").onclick=async()=>{
   const t=answerText();
-  try{await navigator.clipboard.writeText(t);toast("Answers copied. Keep them if you want them.")}
+  try{await navigator.clipboard.writeText(t);toast("Answers copied. Keep these for your own self-improvement.")}
   catch(e){const ta=el("textarea");ta.value=t;ta.style.position="fixed";ta.style.top="-2000px";
     document.body.appendChild(ta);ta.select();
     try{document.execCommand("copy");toast("Answers copied.")}catch(e2){toast("Copy failed. Select the text by hand.","warn")}

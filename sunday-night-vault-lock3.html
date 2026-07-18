@@ -270,9 +270,9 @@ a.nextbtn .arw{margin-left:8px}
     </p>
     <div class="panel">
       <div id="planWrap"></div>
-      <button class="btn ghost" id="copyBtn" type="button">Copy my answers (for your own notes)</button>
+      <button class="btn ghost" id="copyBtn" type="button">Copy my answers</button>
       <p style="font-size:14px;color:var(--ink-2);margin:10px 0 0">
-        Optional. Keep these if you want them. You do not need to hand this in.
+        Keep these for your own self-improvement.
       </p>
     </div>
     <div class="vault hidden" id="vaultBox">
@@ -569,8 +569,19 @@ function renderGate(){
   } else {
     const ok=stage3Ready();
     g.className="gatemsg"+(ok?" ready":"");
-    g.textContent=ok?"Both plans are complete. Copy them, then release the lock."
-                    :"Finish both sentences. Each needs a distraction and a specific action.";
+    if(ok) g.textContent="Both plans are complete. Copy them, then release the lock.";
+    else{
+      const need=[];
+      S.plans.forEach((p,k)=>{
+        const bits=[];
+        if(!p||!p.t) bits.push("pick a distraction from the dropdown");
+        const a=(p&&p.a?p.a.trim():"");
+        if(!a) bits.push("say what you will do");
+        else if(a.length<12) bits.push(`the &ldquo;I will&rdquo; part needs ${12-a.length} more character${12-a.length===1?"":"s"}`);
+        if(bits.length) need.push(`<b>Plan ${k+1}</b>: ${bits.join(", and ")}`);
+      });
+      g.innerHTML=need.join(". ")+".";
+    }
     b.disabled=!ok; b.textContent="Release Lock 3";
   }
 }
@@ -601,7 +612,7 @@ function answerText(){
 }
 $("#copyBtn").onclick=async()=>{
   const t=answerText();
-  try{ await navigator.clipboard.writeText(t); toast("Answers copied. Keep them if you want them."); }
+  try{ await navigator.clipboard.writeText(t); toast("Answers copied. Keep these for your own self-improvement."); }
   catch(e){
     const ta=el("textarea");ta.value=t;ta.style.position="fixed";ta.style.top="-2000px";
     document.body.appendChild(ta);ta.select();

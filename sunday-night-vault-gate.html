@@ -249,7 +249,7 @@ a.nextbtn:hover{background:#000;border-color:#000}
     </div>
     <div class="opened hidden" id="opened">
       <p class="big">The vault is open.</p>
-      <p>Put your name on the certificate below and screenshot it. That is the only thing you hand in. Everything else here is yours to keep.</p>
+      <p>Put your name on the certificate below and screenshot it. That is the only thing you hand in. Keep everything else for your own self-improvement.</p>
     </div>
   </div>
 
@@ -300,9 +300,9 @@ a.nextbtn:hover{background:#000;border-color:#000}
     <div class="panel">
       <h3><label for="bundle">Everything you did, in one block</label></h3>
       <p style="color:var(--ink-2);margin:0 0 12px;max-width:70ch">
-        Optional, and only for you. It carries all three locks: your sort, your full week with every block placed
-        by day and time, your category totals, the distractions you named, and both of your plans. Handy if you
-        want to keep a copy or work from it later.
+        This carries all three locks: your sort, your full week with every block placed by day and time, your
+        category totals, the distractions you named, and both of your plans.
+        <b>Keep these for your own self-improvement.</b>
       </p>
       <textarea id="bundle" readonly></textarea>
       <div class="btnrow">
@@ -789,8 +789,8 @@ $("#certPrint").onclick=()=>{
 /* ---- copy + print ---- */
 $("#copyBtn").onclick=async()=>{
   const t=$("#bundle").value;
-  try{ await navigator.clipboard.writeText(t); toast("Copied."); }
-  catch(e){ $("#bundle").select(); document.execCommand&&document.execCommand("copy"); toast("Copied."); }
+  try{ await navigator.clipboard.writeText(t); toast("Copied. Keep these for your own self-improvement."); }
+  catch(e){ $("#bundle").select(); document.execCommand&&document.execCommand("copy"); toast("Copied. Keep these for your own self-improvement."); }
 };
 $("#printBtn").onclick=()=>{ document.body.classList.remove("printcert"); window.print(); };
 
