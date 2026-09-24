@@ -36,6 +36,10 @@
   --cl1-t: #D8E9F9;   --cl1-s: #1A5A8A;
   --cl2-t: #D4EEF2;   --cl2-s: #14646F;
   --buf-t: #F9ECCB;   --buf-s: #7A5600;
+  --com-t: #E4EFCF;   --com-s: #4A6B12;
+  --ot1-t: #E2E6EA;   --ot1-s: #3F4E5E;
+  --ot2-t: #EFE8D6;   --ot2-s: #6A5A2E;
+  --ot3-t: #F2E4F4;   --ot3-s: #7B2E86;
 
   --r:5px;
   --f-display: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
@@ -174,6 +178,40 @@ input[type=text]:focus, select:focus, textarea:focus{border-color:var(--accent);
 fieldset{border:0;padding:0;margin:0 0 14px}
 legend{font-size:13px;font-weight:700;color:var(--ink-2);margin-bottom:6px;padding:0}
 .catpick{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+
+/* ---------- numbered steps ---------- */
+.steph{display:flex;align-items:baseline;gap:9px;font-family:var(--f-body);font-size:15px;font-weight:700;
+  color:var(--ink);margin:0 0 9px;letter-spacing:0;text-transform:none}
+.steph + .help{margin-top:-4px}
+.stepno{flex:0 0 auto;display:inline-block;background:var(--accent);color:#fff;font-size:12px;font-weight:700;
+  padding:2px 8px;border-radius:999px;letter-spacing:.02em}
+.steph .optional{font-weight:400;color:var(--ink-3);font-size:13px}
+.stepblock{padding-top:14px;margin-top:14px;border-top:1px solid var(--rule)}
+.stepblock.first{padding-top:0;margin-top:0;border-top:0}
+.howto{background:var(--surface);border:2px solid var(--accent);border-radius:var(--r);padding:16px 20px;margin:0 0 18px}
+.howto h3{font-family:var(--f-display);font-size:19px;margin:0 0 8px}
+.howto ol{margin:0;padding-left:0;list-style:none;display:grid;gap:6px}
+.howto li{display:flex;gap:10px;align-items:baseline;font-size:15px;color:var(--ink-2)}
+.howto li b{color:var(--ink)}
+.howto .after{margin:10px 0 0;font-size:14.5px;color:var(--ink-2)}
+.howto .after b{color:var(--ink)}
+.gridstep{margin:0 0 10px}
+
+/* ---------- cross-lock navigation ---------- */
+.homelink{
+  font-size:13.5px;color:var(--accent);text-decoration:none;font-weight:600;
+  border:1.5px solid var(--rule-firm);border-radius:var(--r);padding:6px 12px;white-space:nowrap;
+}
+.homelink:hover{background:var(--accent-lo);border-color:var(--accent)}
+a.nextbtn{
+  display:inline-block;margin-top:18px;text-decoration:none;
+  border:2px solid var(--ink);background:var(--ink);color:#fff;font-weight:700;
+  padding:13px 26px;border-radius:var(--r);font-size:16px;
+}
+a.nextbtn:hover{background:#000;border-color:#000}
+.vaultnav{margin-top:16px;font-size:13.5px}
+.vaultnav a{color:var(--ink-2)}
+.buildstamp{margin:44px 0 0;font-family:var(--f-data);font-size:11px;letter-spacing:.14em;color:var(--ink-3);text-align:right}
 .catbtn{
   border:1.5px solid var(--rule-firm);background:var(--surface);border-radius:var(--r);
   padding:9px 10px;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:14px;text-align:left;
@@ -477,46 +515,50 @@ textarea{min-height:130px;resize:vertical;line-height:1.6}
       </section>
 
       <!-- block builder -->
-      <section class="panel" id="makerPanel" aria-labelledby="makerh">
-        <h2 class="eyebrow" id="makerh">Build a block from your real week</h2>
-
-        <fieldset>
-          <legend id="catlbl">Category</legend>
+      <section class="panel" id="makerPanel" aria-label="Build a block">
+        <fieldset class="stepblock first">
+          <legend class="steph" id="catlbl"><span class="stepno">Step 1</span> Choose a category</legend>
           <div class="catpick" role="group" aria-labelledby="catlbl" id="catPick"></div>
+          <p class="help" style="margin:8px 0 0">Use at least three categories. You do not need to use all eight.
+            The three Other categories are for anything that does not fit, such as a commute, errands, or a hobby.</p>
         </fieldset>
 
-        <div class="field">
-          <label for="blkName">Name it</label>
+        <div class="field stepblock">
+          <label class="steph" for="blkName"><span class="stepno">Step 2</span> Name the block <span class="optional">(optional)</span></label>
           <input id="blkName" type="text" maxlength="30" autocomplete="off" aria-describedby="blkNameHelp">
-          <p class="help" id="blkNameHelp">Leave blank to use the category name.</p>
+          <p class="help" id="blkNameHelp">Leave this blank to use the category name.</p>
         </div>
 
-        <div class="field">
-          <label for="blkHrs">How long is one block</label>
+        <div class="field stepblock">
+          <label class="steph" for="blkHrs"><span class="stepno">Step 3</span> Choose how long it lasts</label>
           <select id="blkHrs"></select>
         </div>
 
-        <button class="btn wide" id="addBlk" type="button">Add to my blocks</button>
+        <div class="stepblock">
+          <p class="steph"><span class="stepno">Step 4</span> Add it to your list</p>
+          <button class="btn wide" id="addBlk" type="button">Add to my blocks</button>
+        </div>
 
         <div class="hint">
-          <b>Blocks are reusable.</b> Build &ldquo;Work, 8 hrs&rdquo; once, then drop it on every day you work. It stays in the
-          list until you delete it.
+          <b>Blocks are reusable.</b> Build &ldquo;Work, 8 hrs&rdquo; once, then place it on every day you work. It stays
+          in your list until you delete it.
         </div>
       </section>
 
       <!-- repeat control -->
       <section class="panel" id="repeatPanel" aria-labelledby="reph">
-        <h2 class="eyebrow" id="reph">When I place a block, put it on</h2>
+        <h2 class="steph" id="reph"><span class="stepno">Step 5</span> Choose which days it goes on</h2>
         <fieldset>
           <legend class="sr">Repeat pattern</legend>
           <div class="repeat" role="group" id="repPick"></div>
         </fieldset>
-        <p class="help" style="margin:8px 0 0">Pick a pattern, then click a start time on the grid.</p>
+        <p class="help" style="margin:8px 0 0">&ldquo;Mon&ndash;Fri&rdquo; and &ldquo;All 7 days&rdquo; place the same block at the same time on each of those days.</p>
       </section>
 
       <!-- tray -->
       <section class="panel" aria-labelledby="trayh">
-        <h2 class="eyebrow" id="trayh"><span id="trayTitle">My blocks</span></h2>
+        <h2 class="steph" id="trayh"><span class="stepno" id="trayStep">Step 6</span> <span id="trayTitle">Select a block from your list</span></h2>
+        <p class="help" id="trayHelp" style="margin:0 0 10px">The block you just added is already selected. Click any block to select it instead.</p>
         <div class="tray" id="tray"></div>
         <p class="tray-empty hidden" id="trayEmpty"></p>
       </section>
@@ -529,11 +571,13 @@ textarea{min-height:130px;resize:vertical;line-height:1.6}
       <h2 class="stage-h" id="stageTitle">Claim your life</h2>
       <p class="lede" id="stageLede">
         This grid is your week, Sunday through Saturday, 6am to 10pm. That is <strong>112 hours</strong>, and it is all
-        there is. Build a block on the left, click it in your list, then click a start time on the grid. You need at
-        least one block in each of the four categories before the vault will let you go on.
+        there is. Fill it with the things you already do each week before any school goes in.
       </p>
 
+      <div class="howto" id="howto" aria-labelledby="howtoh"></div>
+
       <div class="gridbox">
+        <p class="steph gridstep" id="gridStep"><span class="stepno" id="gridStepNo">Step 7</span> <span>Click a start time on the grid</span></p>
         <p class="armed" id="armed" data-idle="1" role="status">No block selected. Click one in your list to arm it.</p>
 
         <table class="week" id="week">
@@ -565,16 +609,16 @@ textarea{min-height:130px;resize:vertical;line-height:1.6}
         <div class="panel">
           <div class="qa">
             <h3><label for="q1">Where did the time actually go</label></h3>
-            <p>Look at the week you just built. Name the one thing that surprised you, and name the block you would have to move or shrink to make school fit.</p>
-            <textarea id="q1" maxlength="1500" aria-describedby="c1"></textarea>
-            <p class="count" id="c1">0 characters</p>
+            <p>Look at the week you just built. Name the one thing that surprised you, and name the block you would have to move or shrink to make school fit. <strong>Respond in no more than 200 words.</strong></p>
+            <textarea id="q1" aria-describedby="c1"></textarea>
+            <p class="count" id="c1">0 of 200 words</p>
           </div>
 
           <div class="qa">
             <h3><label for="q2">Your protected hours</label></h3>
-            <p>The 4R paper and the journal article cannot be done in fifteen minute pieces. Give the exact day and start time you protected for that work, and say what you will tell the people in your house about that block.</p>
-            <textarea id="q2" maxlength="1500" aria-describedby="c2"></textarea>
-            <p class="count" id="c2">0 characters</p>
+            <p>The 4R paper and the journal article cannot be done in fifteen minute pieces. Give the exact day and start time you protected for that work, and say what you will tell the people in your house about that block. <strong>Respond in no more than 200 words.</strong></p>
+            <textarea id="q2" aria-describedby="c2"></textarea>
+            <p class="count" id="c2">0 of 200 words</p>
           </div>
 
           <button class="btn ghost" id="copyBtn" type="button">Copy my plan</button>
@@ -594,12 +638,12 @@ textarea{min-height:130px;resize:vertical;line-height:1.6}
 
     </div>
   </div>
-  <p class="buildstamp">BUILD 5 &middot; Lock 2</p>
+  <p class="buildstamp">BUILD 6 &middot; Lock 2</p>
 </div>
 
 <div class="dock">
   <div class="dock-in">
-    <p class="gatemsg" id="gate">Place at least one block in each of the four categories.</p>
+    <p class="gatemsg" id="gate">Place blocks from at least three categories.</p>
     <button class="btn ghost sm" id="resetBtn" type="button">Start over</button>
     <button class="btn" id="nextBtn" type="button" disabled>Continue</button>
   </div>
@@ -635,11 +679,16 @@ const CONFIG = {
     family: {label:"Family",  tint:"var(--fam-t)",  strong:"var(--fam-s)"},
     health: {label:"Health",  tint:"var(--hea-t)",  strong:"var(--hea-s)"},
     social: {label:"Social",  tint:"var(--soc-t)",  strong:"var(--soc-s)"},
+    community:{label:"Community Engagement", tint:"var(--com-t)", strong:"var(--com-s)"},
+    other1: {label:"Other 1", tint:"var(--ot1-t)",  strong:"var(--ot1-s)"},
+    other2: {label:"Other 2", tint:"var(--ot2-t)",  strong:"var(--ot2-s)"},
+    other3: {label:"Other 3", tint:"var(--ot3-t)",  strong:"var(--ot3-s)"},
     class1: {label:"Class 1", tint:"var(--cl1-t)",  strong:"var(--cl1-s)"},
     class2: {label:"Class 2", tint:"var(--cl2-t)",  strong:"var(--cl2-s)"},
     buffer: {label:"Buffer",  tint:"var(--buf-t)",  strong:"var(--buf-s)"}
   },
-  lifeCats: ["work","family","health","social"],
+  lifeCats: ["work","family","health","social","community","other1","other2","other3"],
+  minLifeCats: 3,
   schoolTasks: [
     {id:"c1a", cat:"class1", name:"Watching lectures",               est:0.75, place:1.0, mode:"chunk"},
     {id:"c1b", cat:"class1", name:"Reading course material",         est:3.0,  place:3.0, mode:"chunk"},
@@ -690,6 +739,20 @@ let S = {
   cursor:{r:0,c:0},
   seqStamp:0, seqInst:0
 };
+
+
+/* ---------- word limit: no minimum beyond one word, hard cap at 200 ---------- */
+const WORD_MAX=200;
+function wordCount(s){const t=String(s||"").trim(); return t?t.split(/\s+/).length:0;}
+function capWords(ta){
+  if(wordCount(ta.value)<=WORD_MAX) return false;
+  const m=ta.value.match(new RegExp("^\\s*(?:\\S+\\s+){"+(WORD_MAX-1)+"}\\S+"));
+  if(m) ta.value=m[0];
+  return true;
+}
+function countText(n){
+  return n>=WORD_MAX ? `${n} of ${WORD_MAX} words. You have reached the limit.` : `${n} of ${WORD_MAX} words`;
+}
 
 const idx=(r,c)=>r*COLS+c;
 const $=s=>document.querySelector(s);
@@ -789,7 +852,8 @@ function currentCat(){return $("#catPick").querySelector('[aria-pressed="true"]'
 function syncNamePlaceholder(){
   const c=CONFIG.categories[currentCat()];
   $("#blkName").placeholder = ({work:"Warehouse shift",family:"Dinner and bedtime",
-                                health:"Gym",social:"Church"})[currentCat()] || c.label;
+                                health:"Gym",social:"Friends",community:"Food pantry volunteering",
+                                other1:"Commute",other2:"Errands",other3:"Hobby"})[currentCat()] || c.label;
 }
 function buildRepeat(){
   const box=$("#repPick"); box.innerHTML="";
@@ -1030,7 +1094,38 @@ function render(){
   if(S.stage===3) renderLedger();
   if(!$("#textview").classList.contains("hidden")) renderTextView();
 }
-function renderStages(){ showApp(); }
+function renderStages(){ showApp(); renderHowTo(); }
+function renderHowTo(){
+  const h=$("#howto"); if(!h) return;
+  const row=(n,t)=>`<li><span class="stepno">Step ${n}</span><span>${t}</span></li>`;
+  if(S.stage===1){
+    h.innerHTML=`<h3 id="howtoh">How to build your week</h3><ol>`+
+      row(1,"<b>Choose a category</b> on the left, such as Work or Family.")+
+      row(2,"<b>Name the block</b> if you want to, for example &ldquo;Warehouse shift.&rdquo;")+
+      row(3,"<b>Choose how long</b> one block lasts.")+
+      row(4,"<b>Click Add to my blocks.</b>")+
+      row(5,"<b>Choose which days</b> it goes on: one day, Monday to Friday, or all seven.")+
+      row(6,"<b>Select the block</b> in your list. A new block is selected for you.")+
+      row(7,"<b>Click a start time</b> on the grid to place it.")+
+      `</ol><p class="after">Repeat these steps for each part of your week. <b>Use at least three categories.</b>
+        To remove a block from the grid, click it.</p>`;
+    $("#gridStepNo").textContent="Step 7";
+  } else if(S.stage===2){
+    h.innerHTML=`<h3 id="howtoh">How to place your school hours</h3><ol>`+
+      row(1,"<b>Select a school task</b> in the list on the left.")+
+      row(2,"<b>Click a start time</b> on the grid to place it.")+
+      row(3,"<b>Repeat</b> until every task in the list shows a check mark.")+
+      `</ol><p class="after">If a task will not fit, click a block on the grid to remove it and make room.</p>`;
+    $("#gridStepNo").textContent="Step 2";
+  } else {
+    h.innerHTML=`<h3 id="howtoh">What to do now</h3><ol>`+
+      row(1,"<b>Read the numbers</b> under the grid.")+
+      row(2,"<b>Answer both questions</b> in no more than 200 words each.")+
+      row(3,"<b>Click Release Lock 2</b> at the bottom of the screen.")+
+      `</ol>`;
+  }
+  $("#gridStep").classList.toggle("hidden", S.stage===3);
+}
 function renderArmed(){
   const a=$("#armed"), b=armedBlock();
   if(!b){ a.dataset.idle="1"; a.textContent="No block selected. Click one in your list to arm it."; return; }
@@ -1042,7 +1137,11 @@ function renderArmed(){
 }
 function renderTray(){
   const tray=$("#tray"); tray.innerHTML="";
-  $("#trayTitle").textContent = S.stage===1 ? "My blocks" : "School hours to place";
+  $("#trayTitle").textContent = S.stage===1 ? "Select a block from your list" : "Select a school task";
+  $("#trayStep").textContent = S.stage===1 ? "Step 6" : "Step 1";
+  $("#trayHelp").textContent = S.stage===1
+    ? "The block you just added is already selected. Click any block to select it instead."
+    : "Click a task to select it, then click a start time on the grid.";
   let rows=0;
 
   if(S.stage===1){
@@ -1151,7 +1250,7 @@ function renderDial(){
     '<thead><tr><th></th><th scope="col">Category</th><th scope="col" style="text-align:right">Hrs</th></tr></thead>';
   const tb=el("tbody");
   Object.keys(CONFIG.categories).forEach(k=>{
-    if(byCat[k]<=0 && S.stage===1 && ["class1","class2","buffer"].includes(k)) return;
+    if(byCat[k]<=0) return;
     const c=CONFIG.categories[k];
     const tr=el("tr");
     tr.innerHTML=`<td class="sw"><i style="background:${c.tint};border-color:${c.strong}"></i></td>`+
@@ -1207,20 +1306,26 @@ $("#tvBtn").onclick=()=>{
 /* =====================================================================
    GATES
    ===================================================================== */
-function stage1Ready(){const{byCat}=totals(); return CONFIG.lifeCats.every(k=>byCat[k]>0)}
+function usedLifeCats(){const{byCat}=totals(); return CONFIG.lifeCats.filter(k=>byCat[k]>0)}
+function stage1Ready(){return usedLifeCats().length>=CONFIG.minLifeCats}
 function stage2Ready(){return CONFIG.schoolTasks.every(t=>S.tasks[t.id].remaining<=0)}
-function stage3Ready(){return $("#q1").value.trim().length>=120 && $("#q2").value.trim().length>=120}
+function stage3Ready(){return wordCount($("#q1").value)>=1 && wordCount($("#q2").value)>=1}
 
 function renderGate(){
   const g=$("#gate"), btn=$("#nextBtn");
   g.className="gatemsg";
   if(S.stage===1){
-    const{byCat,free}=totals();
-    const miss=CONFIG.lifeCats.filter(k=>byCat[k]<=0).map(k=>CONFIG.categories[k].label);
-    if(miss.length){ g.innerHTML=`Still need a block for: <b>${miss.join(", ")}</b>.`; btn.disabled=true; }
-    else{ g.className="gatemsg ready";
-          g.innerHTML=`Your week is on the grid. <b>${free.toFixed(1)} hours</b> are still unclaimed.`;
-          btn.disabled=false; }
+    const{free}=totals();
+    const used=usedLifeCats(), need=CONFIG.minLifeCats-used.length;
+    const names=used.map(k=>CONFIG.categories[k].label).join(", ");
+    if(need>0){
+      g.innerHTML = used.length
+        ? `Categories used so far: <b>${names}</b>. Place blocks from <b>${need} more</b> categor${need===1?"y":"ies"} to go on.`
+        : `Place blocks from at least <b>three categories</b> to go on.`;
+      btn.disabled=true;
+    } else { g.className="gatemsg ready";
+      g.innerHTML=`${used.length} categories on the grid. <b>${free.toFixed(1)} hours</b> are still unclaimed. Add more or click Now add school.`;
+      btn.disabled=false; }
     btn.textContent="Now add school";
   } else if(S.stage===2){
     const left=+CONFIG.schoolTasks.reduce((a,t)=>a+Math.max(0,S.tasks[t.id].remaining),0).toFixed(1);
@@ -1233,15 +1338,15 @@ function renderGate(){
     } else{ g.className="gatemsg ready"; g.innerHTML=`All ${SCHOOL_GRID} hours are on the grid.`; btn.disabled=false; }
     btn.textContent="Read the ledger";
   } else {
-    const n1=$("#q1").value.trim().length, n2=$("#q2").value.trim().length;
+    const n1=wordCount($("#q1").value), n2=wordCount($("#q2").value);
     const ok=stage3Ready();
     g.className="gatemsg"+(ok?" ready":"");
     if(ok) g.innerHTML="Both answers are in. Copy your plan, then release the lock.";
     else{
       const short=[];
-      if(n1<120) short.push(`<b>&ldquo;Where did the time actually go&rdquo;</b> needs ${120-n1} more character${120-n1===1?"":"s"}`);
-      if(n2<120) short.push(`<b>&ldquo;Your protected hours&rdquo;</b> needs ${120-n2} more character${120-n2===1?"":"s"}`);
-      g.innerHTML=short.join(", and ")+".";
+      if(n1<1) short.push(`<b>&ldquo;Where did the time actually go&rdquo;</b>`);
+      if(n2<1) short.push(`<b>&ldquo;Your protected hours&rdquo;</b>`);
+      g.innerHTML="Still to answer: "+short.join(" and ")+".";
     }
     btn.disabled=!ok; btn.textContent="Release Lock 2";
   }
@@ -1342,9 +1447,10 @@ $("#copyBtn").onclick=async()=>{
 ["q1","q2"].forEach((q,i)=>{
   const ta=$("#"+q);
   ta.addEventListener("input",()=>{
-    const n=ta.value.trim().length, c=$("#c"+(i+1));
-    c.textContent = n<120 ? `${n} characters. ${120-n} more needed.` : `${n} characters. Long enough.`;
-    c.dataset.ok = n>=120?"1":"0";
+    if(capWords(ta)) toast(`Answers stop at ${WORD_MAX} words. Anything past that was cut.`,"warn");
+    const n=wordCount(ta.value), c=$("#c"+(i+1));
+    c.textContent = countText(n);
+    c.dataset.ok = n>=1?"1":"0";
     renderGate(); save();
   });
 });
@@ -1385,9 +1491,9 @@ $("#resetBtn").onclick=()=>{
 buildCatPicker(); buildRepeat(); buildHrs(); buildGrid(); buildIntroQuiz();
 const restored=load(); if(!restored) loadTasks();
 ["q1","q2"].forEach((q,i)=>{
-  const n=$("#"+q).value.trim().length, c=$("#c"+(i+1));
-  c.textContent = n<120 ? `${n} characters. ${120-n} more needed.` : `${n} characters. Long enough.`;
-  c.dataset.ok = n>=120?"1":"0";
+  const n=wordCount($("#"+q).value), c=$("#c"+(i+1));
+  c.textContent = countText(n);
+  c.dataset.ok = n>=1?"1":"0";
 });
 CONFIG.intro.forEach((q,i)=>{
   if(S.introQuiz[i]===null||S.introQuiz[i]===undefined) return;

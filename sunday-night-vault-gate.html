@@ -206,7 +206,7 @@ a.nextbtn:hover{background:#000;border-color:#000}
 #sheet{display:none}
 @media print{
   body{background:#fff}
-  .wrap > *:not(#sheet){display:none !important}
+  body:not(.printcert) .wrap > *:not(#sheet){display:none !important}
   .toast,.masthead{display:none !important}
   #sheet{display:block;font-size:11pt}
   #sheet h1{font-family:var(--f-display);font-size:20pt;margin:0 0 2pt}
@@ -220,8 +220,15 @@ a.nextbtn:hover{background:#000;border-color:#000}
   @page{margin:14mm}
 }
 @media print{
-  body.printcert .wrap > *:not(#certWrap){display:none !important}
-  body.printcert #certWrap{display:block !important}
+  body.printcert .wrap > *:not(#record),
+  body.printcert #record > *:not(#certPanel),
+  body.printcert #certPanel > *:not(#certWrap),
+  body.printcert .toast{display:none !important}
+  html:has(body.printcert),body.printcert{background:#fff !important}
+  body.printcert .wrap{padding:0;max-width:none}
+  body.printcert #certPanel{border:0;padding:0;margin:0;background:none}
+  body.printcert #certWrap{display:block !important;margin:0}
+  body.printcert .cert{-webkit-print-color-adjust:exact;print-color-adjust:exact}
   body.printcert #certWrap .btnrow,body.printcert #certWrap .namebar,
   body.printcert #certWrap .eyebrow,body.printcert #certWrap p.help{display:none !important}
   body.printcert .cert{box-shadow:none;max-width:100%;aspect-ratio:1.414/1}
@@ -254,7 +261,7 @@ a.nextbtn:hover{background:#000;border-color:#000}
     </div>
     <div class="opened hidden" id="opened">
       <p class="big">The vault is open.</p>
-      <p>Put your name on the certificate below and screenshot it. That is the only thing you hand in. Keep everything else for your own self-improvement.</p>
+      <p>Put your name on the certificate below and download it as a PDF. That PDF is the only thing you hand in. Keep everything else for your own self-improvement.</p>
     </div>
   </div>
 
@@ -293,11 +300,12 @@ a.nextbtn:hover{background:#000;border-color:#000}
         <button class="btn" id="certBtn" type="button">Make my certificate</button>
       </div>
       <p class="help" style="font-size:13.5px;color:var(--ink-2);margin:6px 0 0">
-        Screenshot it or print it. Either one counts as proof you finished.
+        After the certificate appears, click <b>Download certificate (PDF)</b> and upload that file to Canvas.
       </p>
       <div id="certWrap" class="hidden"></div>
       <div class="btnrow hidden" id="certBtns">
-        <button class="btn ghost sm" id="certPrint" type="button">Print or save as PDF</button>
+        <button class="btn sm" id="certPdf" type="button">Download certificate (PDF)</button>
+        <button class="btn ghost sm" id="certPrint" type="button">Print certificate</button>
         <a class="btn ghost sm" href="index.html" style="text-decoration:none;display:inline-block">Back to all three locks</a>
       </div>
     </div>
@@ -335,7 +343,7 @@ a.nextbtn:hover{background:#000;border-color:#000}
 
   <!-- printable one page plan -->
   <div id="sheet"></div>
-  <p class="buildstamp">BUILD 5 &middot; the gate</p>
+  <p class="buildstamp">BUILD 6 &middot; the gate</p>
 </div>
 
 <div class="toast" id="toast" role="status"></div>
@@ -355,6 +363,7 @@ const CONFIG = {
   dayStart:6, dayEnd:22, slotMinutes:30,
   days:["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
   catLabels:{work:"Work",family:"Family",health:"Health",social:"Social",
+             community:"Community Engagement",other1:"Other 1",other2:"Other 2",other3:"Other 3",
              class1:"Class 1",class2:"Class 2",buffer:"Buffer"},
   quadLabels:{q1:"Do it now",q2:"Schedule it",q3:"Trim it",q4:"Drop it"},
   // must stay identical to CONFIG.checklist in the Lock 3 file
@@ -675,18 +684,19 @@ $("#pasteBtn").onclick=()=>{
    Mirrors the writing gate inside each lock. The certificate will not
    generate unless all three are genuinely finished in this browser.
    ===================================================================== */
+const wc=v=>{const t=String(v||"").trim(); return t?t.split(/\s+/).length:0;};
 const COMPLETE = {
   lock1:{ name:"Lock 1: The Matrix",
-    test:d=>!!(d && (d.reflect||"").trim().length>=120),
+    test:d=>!!(d && wc(d.reflect)>=1),
     why:"the written answer at the end of week five" },
   lock2:{ name:"Lock 2: Your Week",
-    test:d=>!!(d && (d.q1||"").trim().length>=120 && (d.q2||"").trim().length>=120),
+    test:d=>!!(d && wc(d.q1)>=1 && wc(d.q2)>=1),
     why:"both written answers under the ledger" },
   lock3:{ name:"Lock 3: Distractions",
     test:d=>!!(d && Array.isArray(d.found) && d.found.length>=10
-              && (d.own||"").trim().length>=4
+              && (d.own||"").trim().length>=1
               && Array.isArray(d.plans)
-              && d.plans.filter(p=>p&&p.t&&p.a&&p.a.trim().length>=12).length===2),
+              && d.plans.filter(p=>p&&p.t&&p.a&&p.a.trim().length>=1).length===2),
     why:"all ten distractions found, your own added, and both if-then plans" }
 };
 function missingWork(){
@@ -780,17 +790,63 @@ function buildCert(){
     </div>`;
   $("#certWrap").classList.remove("hidden");
   $("#certBtns").classList.remove("hidden");
-  toast("Certificate ready. Screenshot it or print it.");
+  toast("Certificate ready. Click Download certificate (PDF) below it.");
   $("#certWrap").scrollIntoView({behavior:"smooth",block:"center"});
 }
 const esc=x=>String(x).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
 $("#certBtn").onclick=buildCert;
 $("#certName").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();buildCert()}});
-$("#certPrint").onclick=()=>{
+/* ---- certificate as a PDF ----
+   Loads html2canvas and jsPDF from cdnjs only when the button is clicked,
+   draws the certificate at a fixed A4-landscape size, and saves the file.
+   If the libraries cannot load, it falls back to the print dialog. */
+const PDF_LIBS=[
+  "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js",
+  "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
+];
+function loadScript(src){
+  return new Promise((ok,bad)=>{
+    if(document.querySelector(`script[src="${src}"]`)) return ok();
+    const sc=document.createElement("script"); sc.src=src; sc.onload=()=>ok(); sc.onerror=()=>bad(new Error(src));
+    document.head.appendChild(sc);
+  });
+}
+async function downloadCertPdf(){
+  const cert=document.querySelector("#certWrap .cert");
+  if(!cert){ toast("Make your certificate first.","warn"); return; }
+  const btn=$("#certPdf"), label=btn.textContent;
+  btn.disabled=true; btn.textContent="Building your PDF\u2026";
+  try{
+    for(const src of PDF_LIBS) await loadScript(src);
+    const W=1123, H=794;                      // A4 landscape at 96 dpi
+    const canvas=await window.html2canvas(cert,{
+      scale:2, backgroundColor:"#FFFFFF", useCORS:true, logging:false,
+      windowWidth:1400, width:W, height:H,
+      onclone:doc=>{
+        const c=doc.querySelector("#certWrap .cert");
+        c.style.width=W+"px"; c.style.height=H+"px"; c.style.maxWidth="none";
+        c.style.aspectRatio="auto"; c.style.boxShadow="none"; c.style.margin="0";
+      }
+    });
+    const pdf=new window.jspdf.jsPDF({orientation:"landscape",unit:"mm",format:"a4"});
+    pdf.addImage(canvas.toDataURL("image/jpeg",0.95),"JPEG",0,0,297,210);
+    const who=($("#certName").value||"student").trim().replace(/[^A-Za-z0-9]+/g,"-").replace(/^-|-$/g,"");
+    pdf.save(`Sunday-Night-Vault-Certificate-${who||"student"}.pdf`);
+    toast("PDF saved. Look in your Downloads folder, then upload it to Canvas.");
+  }catch(e){
+    toast("The PDF could not be built here, so the print window will open. Choose Save as PDF as the printer.","warn");
+    setTimeout(printCert,900);
+  }finally{
+    btn.disabled=false; btn.textContent=label;
+  }
+}
+function printCert(){
   document.body.classList.add("printcert");
   window.print();
   setTimeout(()=>document.body.classList.remove("printcert"),400);
-};
+}
+$("#certPdf").onclick=downloadCertPdf;
+$("#certPrint").onclick=printCert;
 
 /* ---- copy + print ---- */
 $("#copyBtn").onclick=async()=>{

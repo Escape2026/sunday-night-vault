@@ -346,9 +346,10 @@ a.nextbtn .arw{margin-left:8px}
       <p style="color:var(--ink-2);margin:0 0 10px;max-width:72ch">
         You are about to build a real week in Lock 2. Name one box two task from your own two courses that you would
         normally let slide, and say exactly when in the week you are going to do it instead.
+        <strong>Respond in no more than 200 words.</strong>
       </p>
-      <textarea id="reflect" maxlength="1500" aria-describedby="rc"></textarea>
-      <p class="count" id="rc">0 characters</p>
+      <textarea id="reflect" aria-describedby="rc"></textarea>
+      <p class="count" id="rc">0 of 200 words</p>
       <button class="btn ghost sm" id="copyBtn" type="button" style="margin-top:12px">Copy my answers</button>
     </div>
 
@@ -360,7 +361,7 @@ a.nextbtn .arw{margin-left:8px}
           <p class="vaultnav"><a href="index.html">or go back to all three locks</a></p>
     </div>
   </section>
-  <p class="buildstamp">BUILD 5 &middot; Lock 1</p>
+  <p class="buildstamp">BUILD 6 &middot; Lock 1</p>
 </div>
 
 <div class="dock">
@@ -622,14 +623,27 @@ $("#wkSlider").addEventListener("input",e=>{
   S.weeks=+e.target.value; $("#wkOut").textContent=S.weeks;
   renderWeeks(); save();
 });
+/* ---------- word limit: one word minimum, hard cap at 200 ---------- */
+const WORD_MAX=200;
+function wordCount(s){const t=String(s||"").trim(); return t?t.split(/\s+/).length:0;}
+function capWords(ta){
+  if(wordCount(ta.value)<=WORD_MAX) return false;
+  const m=ta.value.match(new RegExp("^\\s*(?:\\S+\\s+){"+(WORD_MAX-1)+"}\\S+"));
+  if(m) ta.value=m[0];
+  return true;
+}
+function countText(n){
+  return n>=WORD_MAX ? `${n} of ${WORD_MAX} words. You have reached the limit.` : `${n} of ${WORD_MAX} words`;
+}
 $("#reflect").addEventListener("input",e=>{
+  if(capWords(e.target)) toast(`Answers stop at ${WORD_MAX} words. Anything past that was cut.`,"warn");
   S.reflect=e.target.value;
-  const n=e.target.value.trim().length,c=$("#rc");
-  c.textContent = n<120 ? `${n} characters. ${120-n} more needed.` : `${n} characters. Long enough.`;
-  c.dataset.ok=n>=120?"1":"0";
+  const n=wordCount(e.target.value),c=$("#rc");
+  c.textContent = countText(n);
+  c.dataset.ok=n>=1?"1":"0";
   renderGate(); save();
 });
-function stage4Ready(){return S.weeks>=1 && S.reflect.trim().length>=120}
+function stage4Ready(){return S.weeks>=1 && wordCount(S.reflect)>=1}
 
 /* ===================== RENDER + GATES ===================== */
 function render(){
@@ -765,9 +779,9 @@ if(S.quiz.some(v=>v!==null)){
     fb.textContent=(S.quiz[qi]===q.a?"Correct. ":"Not quite. ")+q.fb; d.appendChild(fb);
   });
 }
-{const n=(S.reflect||"").trim().length,c=$("#rc");
- c.textContent = n<120 ? `${n} characters. ${120-n} more needed.` : `${n} characters. Long enough.`;
- c.dataset.ok=n>=120?"1":"0";}
+{const n=wordCount(S.reflect),c=$("#rc");
+ c.textContent = countText(n);
+ c.dataset.ok=n>=1?"1":"0";}
 render();
 </script>
 </body>

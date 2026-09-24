@@ -288,7 +288,7 @@ a.nextbtn .arw{margin-left:8px}
           <p class="vaultnav"><a href="index.html">or go back to all three locks</a></p>
     </div>
   </section>
-  <p class="buildstamp">BUILD 5 &middot; Lock 3</p>
+  <p class="buildstamp">BUILD 6 &middot; Lock 3</p>
 </div>
 
 <div class="dock">
@@ -473,8 +473,8 @@ $("#ownOne").addEventListener("input",e=>{
   S.own=e.target.value;
   const n=e.target.value.trim().length;
   const c=$("#ownCount");
-  c.textContent = n>=4 ? "Got it." : "Required.";
-  c.dataset.ok = n>=4?"1":"0";
+  c.textContent = n>=1 ? "Got it." : "Required.";
+  c.dataset.ok = n>=1?"1":"0";
   renderGate(); buildPlans(); save();
 });
 
@@ -553,9 +553,9 @@ function render(){
   renderGate();
 }
 function stage1Ready(){return S.found.length>=CONFIG.spots.length}
-function stage2Ready(){return S.checked.length>=1 && S.own.trim().length>=4}
+function stage2Ready(){return S.checked.length>=1 && S.own.trim().length>=1}
 function stage3Ready(){
-  return S.plans.every(p=>p.t && p.a && p.a.trim().length>=12);
+  return S.plans.every(p=>p.t && p.a && p.a.trim().length>=1);
 }
 function renderGate(){
   const g=$("#gate"), b=$("#nextBtn");
@@ -568,7 +568,7 @@ function renderGate(){
   } else if(S.stage===2){
     const need=[];
     if(S.checked.length<1) need.push("check at least one");
-    if(S.own.trim().length<4) need.push("add one of your own");
+    if(S.own.trim().length<1) need.push("add one of your own");
     if(need.length){ g.innerHTML=`Still to do: <b>${need.join(" and ")}</b>.`; b.disabled=true; }
     else{ g.className="gatemsg ready"; g.textContent=`${S.checked.length+1} distractions named.`; b.disabled=false; }
     b.textContent="Make my plans";
@@ -583,7 +583,6 @@ function renderGate(){
         if(!p||!p.t) bits.push("pick a distraction from the dropdown");
         const a=(p&&p.a?p.a.trim():"");
         if(!a) bits.push("say what you will do");
-        else if(a.length<12) bits.push(`the &ldquo;I will&rdquo; part needs ${12-a.length} more character${12-a.length===1?"":"s"}`);
         if(bits.length) need.push(`<b>Plan ${k+1}</b>: ${bits.join(", and ")}`);
       });
       g.innerHTML=need.join(". ")+".";
